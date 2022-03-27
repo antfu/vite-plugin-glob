@@ -31,7 +31,7 @@ export async function transform(
     const globs: string[] = []
     if (arg1.type === 'ArrayExpression') {
       for (const element of arg1.elements) {
-        if (element.type === 'Literal')
+        if (element?.type === 'Literal')
           globs.push(element.value as string)
       }
     }

@@ -2,7 +2,22 @@
 
 [![NPM version](https://img.shields.io/npm/v/vite-plugin-glob?color=a1b858&label=)](https://www.npmjs.com/package/vite-plugin-glob)
 
-The design experiment for `import.meta.glob` from Vite.
+The design experiment for [`import.meta.glob` from Vite](https://vitejs.dev/guide/features.html#glob-import).
+
+## Why
+
+There are quite some scenarios that `import.meta.glob` wasn't considered when it's been implemented at the beginning. And we received several PRs to improve it. 
+
+However, some design considerataions might conflict with each other. For example, [`#2495 support ignore option for glob import`](https://github.com/vitejs/vite/pull/2495) supports the ignore glob as a second argument, while in [`#6953 import.meta.glob support ?raw`](https://github.com/vitejs/vite/pull/6953) we uses the second argument to specify glob query (and later been changed to `{ as }` via [`#7215 deprecate { assert: { type: raw }} in favor of { as: raw }`](https://github.com/vitejs/vite/pull/7215)).
+
+There are many other PRs that touches it's design as well:
+
+- [`#7209 support custom modifiers for glob imports`](https://github.com/vitejs/vite/pull/7209)
+- [`#7482 add ignore option to import.meta.glob`](https://github.com/vitejs/vite/pull/7482)
+
+With these two TC39 proposals ([`import-reflection`](https://github.com/tc39/proposal-import-reflection) and [`import-assertions`](https://github.com/tc39/proposal-import-assertions)) not settled yet, combining with different needs and design tradeoffs in each PR, making the good API design for `import.meta.glob` directly in Vite core becoming harder and more and more complex than it could be.
+
+Thus I propose to experiment with the `import.meta.glob` as an external plugin so we could introduce breaking change more easier and ships the implementation much faster (in Vite it takes days for a change to be meraged, and weeks to months for it to be landed in stable release). And when we feel the new design is able to cover most of the use cases, then we could embed it into Vite core as a one-time breaking change in v3.0.
 
 ## Install
 

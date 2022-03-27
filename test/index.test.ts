@@ -1,5 +1,6 @@
 import { resolve } from 'path'
 import { describe, expect, it } from 'vitest'
+import { parse } from 'acorn'
 import { transform } from '../src/transform'
 import code from './fixtures/index.ts?raw'
 
@@ -7,7 +8,7 @@ describe('should', async() => {
   const id = resolve(__dirname, './fixtures/index.ts')
 
   it('transform', async() => {
-    expect((await transform(code, id))?.code)
+    expect((await transform(code, id, parse))?.code)
       .toMatchInlineSnapshot(`
         "import * as __vite_glob_next_3_0 from './modules/a.ts'
         import * as __vite_glob_next_3_1 from './modules/b.ts'

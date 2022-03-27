@@ -9,7 +9,7 @@ export default function(_options: Options = {}): Plugin {
   return {
     name: 'vite-plugin-glob',
     transform(code, id) {
-      return transform(code, id)
+      return transform(code, id, this.parse)
     },
   }
 }

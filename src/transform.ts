@@ -25,6 +25,7 @@ export async function transform(
     // @ts-expect-error let me do it
     const ast = parse(argumentString, { ecmaVersion: 'latest' }).body[0].expression as ArrayExpression
 
+    // TODO: runtime warning
     // arg1
     const arg1 = ast.elements[0] as Literal | ArrayExpression
     const globs: string[] = []

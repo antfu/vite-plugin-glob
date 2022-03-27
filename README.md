@@ -2,6 +2,19 @@
 
 [![NPM version](https://img.shields.io/npm/v/vite-plugin-glob?color=a1b858&label=)](https://www.npmjs.com/package/vite-plugin-glob)
 
+
+```ts
+import.meta.globNext('./fixtures/*.ts')
+
+import.meta.globNext([
+  './fixtures/*.ts',
+  '!**/index.ts',
+], {
+  as: 'raw',
+  eager: true,
+})
+```
+
 ## Sponsors
 
 <p align="center">

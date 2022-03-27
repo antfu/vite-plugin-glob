@@ -76,8 +76,9 @@ import.meta.importGlob('./dir/*.js', { as: 'raw' })
 
 ## TypeScript
 
-```jsonc
-// tsconfig.json
+Add to `tsconfig.json`
+
+```json
 {
   "compilerOptions": {
     "types": [

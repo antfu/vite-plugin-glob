@@ -14,7 +14,9 @@ describe('should', async() => {
           name: string
         }
         
-        export const list = {'./modules/a.ts': () => import('./modules/a.ts'), './modules/b.ts': () => import('./modules/b.ts'), './modules/index.ts': () => import('./modules/index.ts')}
+        export const list1 = {'./modules/a.ts': () => import('./modules/a.ts'), './modules/b.ts': () => import('./modules/b.ts'), './modules/index.ts': () => import('./modules/index.ts')}
+        
+        export const list2 = {'./modules/a.ts': () => import('./modules/a.ts'), './modules/b.ts': () => import('./modules/b.ts'), './modules2/a.ts': () => import('./modules2/a.ts'), './modules2/b.ts': () => import('./modules2/b.ts')}
         "
       `)
   })

@@ -23,6 +23,9 @@
       "require": "./dist/index.cjs",
       "import": "./dist/index.mjs",
       "types": "./dist/index.d.ts"
+    },
+    "./client": {
+      "types": "./client.d.ts"
     }
   },
   "typesVersions": {
@@ -30,11 +33,15 @@
       "*": [
         "./dist/*",
         "./dist/index.d.ts"
+      ],
+      "./client": [
+        "./client.d.ts"
       ]
     }
   },
   "files": [
-    "dist"
+    "dist",
+    "*.d.ts"
   ],
   "sideEffects": false,
   "scripts": {

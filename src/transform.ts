@@ -4,7 +4,7 @@ import fg from 'fast-glob'
 import type { ArrayExpression, Literal, ObjectExpression } from 'estree'
 import type { TransformPluginContext } from 'rollup'
 
-const importGlobRE = /\bimport\.meta\.myGlob(?:<\w+>)?\(([\s\S]*?)\)/g
+const importGlobRE = /\bimport\.meta\.importGlob(?:<\w+>)?\(([\s\S]*?)\)/g
 const importPrefix = '__vite_glob_next_'
 
 export async function transform(

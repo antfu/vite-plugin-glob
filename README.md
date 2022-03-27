@@ -4,9 +4,9 @@
 
 
 ```ts
-import.meta.globNext('./fixtures/*.ts')
+import.meta.myGlob('./fixtures/*.ts')
 
-import.meta.globNext([
+import.meta.myGlob([
   './fixtures/*.ts',
   '!**/index.ts',
 ], {

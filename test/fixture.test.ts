@@ -14,11 +14,11 @@ describe('fixture', async() => {
         "import * as __vite_glob_next_1_0 from './modules/a.ts'
         import * as __vite_glob_next_1_1 from './modules/b.ts'
         import * as __vite_glob_next_1_2 from './modules/index.ts'
-        import { default as __vite_glob_next_5_0 } from './modules/a.ts?raw'
-        import { default as __vite_glob_next_5_1 } from './modules/b.ts?raw'
         import { name as __vite_glob_next_3_0 } from './modules/a.ts'
         import { name as __vite_glob_next_3_1 } from './modules/b.ts'
         import { name as __vite_glob_next_3_2 } from './modules/index.ts'
+        import { default as __vite_glob_next_5_0 } from './modules/a.ts?raw'
+        import { default as __vite_glob_next_5_1 } from './modules/b.ts?raw'
         export interface ModuleType {
           name: string
         }

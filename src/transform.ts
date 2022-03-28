@@ -44,6 +44,7 @@ export async function transform(
     }))
       .filter(file => file !== filename)
       .map(i => i.match(/^[.\/]/) ? i : `./${i}`)
+      .sort()
     const start = match.index!
     const end = start + match[0].length
     const query = options.as ? `?${options.as}` : ''

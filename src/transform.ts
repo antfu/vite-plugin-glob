@@ -4,6 +4,7 @@ import fg from 'fast-glob'
 import type { TransformPluginContext } from 'rollup'
 import type { PluginOptions } from '../types'
 import { parseImportGlob } from './parse'
+import { isCSSRequest } from './utils'
 
 const importPrefix = '__vite_glob_next_'
 
@@ -49,29 +50,31 @@ export async function transform(
     const end = start + match[0].length
     const query = options.as ? `?${options.as}` : ''
 
-    if (options.eager) {
-      staticImports.push(
-        ...files.map((file, i) => {
-          const name = `${importPrefix}${index}_${i}`
-          const expression = options.export
-            ? `{ ${options.export} as ${name} }`
-            : `* as ${name}`
-          return `import ${expression} from '${file}${query}'`
-        }),
-      )
-      const replacement = `{\n${files.map((file, i) => `'${file}': ${importPrefix}${index}_${i}`).join(',\n')}\n}`
-      s.overwrite(start, end, replacement)
-    }
-    else {
-      const objProps = files.map((i) => {
-        let importStatement = `import('${i}${query}')`
+    const objectProps: string[] = []
+
+    files.forEach((file, i) => {
+      let importPath = `${file}${query}`
+      if (isCSSRequest(file))
+        importPath = query ? `${importPath}&used` : `${importPath}?used`
+
+      if (options.eager) {
+        const variableName = `${importPrefix}${index}_${i}`
+        const expression = options.export
+          ? `{ ${options.export} as ${variableName} }`
+          : `* as ${variableName}`
+        staticImports.push(`import ${expression} from ${JSON.stringify(importPath)}`)
+        objectProps.push(`${JSON.stringify(file)}: ${variableName}`)
+      }
+      else {
+        let importStatement = `import(${JSON.stringify(importPath)})`
         if (options.export)
-          importStatement += `.then(m => m['${options.export}'])`
-        return `'${i}': () => ${importStatement}`
-      })
-      const replacement = `{\n${objProps.join(',\n')}\n}`
-      s.overwrite(start, end, replacement)
-    }
+          importStatement += `.then(m => m[${JSON.stringify(options.export)}])`
+        objectProps.push(`${JSON.stringify(file)}: () => ${importStatement}`)
+      }
+    })
+
+    const replacement = `{\n${objectProps.join(',\n')}\n}`
+    s.overwrite(start, end, replacement)
   }))
 
   if (staticImports.length)

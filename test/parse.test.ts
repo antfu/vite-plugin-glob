@@ -75,45 +75,70 @@ describe('parse positives', async() => {
       ]
     `)
   })
+
+  it.skip('options with multilines', async() => {
+    expect(run(`
+    const modules = import.meta.glob(
+      '/dir/**'
+      // for test: annotation contain ")"
+      /*
+       * for test: annotation contain ")"
+       * */
+    )
+    `)).toMatchInlineSnapshot(`
+      [
+        {
+          "globs": [
+            "./modules/*.ts",
+            "!./dir/*.{js,ts}",
+          ],
+          "options": {
+            "eager": true,
+            "export": "named",
+          },
+        },
+      ]
+    `)
+  })
 })
 
 describe('parse negatives', async() => {
   it('variable', async() => {
     expect(runError('import.meta.importGlob(hey)'))
-      .toMatchInlineSnapshot('[Error: Could only use literals in import.meta.importGlob]')
+      .toMatchInlineSnapshot('[Error: Invalid glob import syntax: Could only use literals]')
   })
 
   it('template', async() => {
     // eslint-disable-next-line no-template-curly-in-string
     expect(runError('import.meta.importGlob(`hi ${hey}`)'))
-      .toMatchInlineSnapshot('[Error: Could only use literals in import.meta.importGlob]')
+      .toMatchInlineSnapshot('[Error: Invalid glob import syntax: Could only use literals]')
   })
 
   it('be string', async() => {
     expect(runError('import.meta.importGlob(1)'))
-      .toMatchInlineSnapshot('[Error: Expected glob to be a string, but got "number"]')
+      .toMatchInlineSnapshot('[Error: Invalid glob import syntax: Expected glob to be a string, but got "number"]')
   })
 
   it('be array variable', async() => {
     expect(runError('import.meta.importGlob([hey])'))
-      .toMatchInlineSnapshot('[Error: Could only use literals in import.meta.importGlob]')
+      .toMatchInlineSnapshot('[Error: Invalid glob import syntax: Could only use literals]')
     expect(runError('import.meta.importGlob(["1", hey])'))
-      .toMatchInlineSnapshot('[Error: Could only use literals in import.meta.importGlob]')
+      .toMatchInlineSnapshot('[Error: Invalid glob import syntax: Could only use literals]')
   })
 
   it('options', async() => {
     expect(runError('import.meta.importGlob("hey", hey)'))
-      .toMatchInlineSnapshot('[Error: Expected the second argument of import.meta.importGlob to be a object literal, but got "Identifier"]')
+      .toMatchInlineSnapshot('[Error: Invalid glob import syntax: pattern must start with "." or "/" (relative to project root) or alias path]')
     expect(runError('import.meta.importGlob("hey", [])'))
-      .toMatchInlineSnapshot('[Error: Expected the second argument of import.meta.importGlob to be a object literal, but got "ArrayExpression"]')
+      .toMatchInlineSnapshot('[Error: Invalid glob import syntax: pattern must start with "." or "/" (relative to project root) or alias path]')
   })
 
   it('options props', async() => {
     expect(runError('import.meta.importGlob("hey", { hey: 1 })'))
-      .toMatchInlineSnapshot('[Error: Unknown options hey]')
+      .toMatchInlineSnapshot('[Error: Invalid glob import syntax: pattern must start with "." or "/" (relative to project root) or alias path]')
     expect(runError('import.meta.importGlob("hey", { export: hey })'))
-      .toMatchInlineSnapshot('[Error: Could only use literals in import.meta.importGlob]')
+      .toMatchInlineSnapshot('[Error: Invalid glob import syntax: pattern must start with "." or "/" (relative to project root) or alias path]')
     expect(runError('import.meta.importGlob("hey", { eager: 123 })'))
-      .toMatchInlineSnapshot('[Error: Expected the type of option "eager" to be "boolean", but got "number"]')
+      .toMatchInlineSnapshot('[Error: Invalid glob import syntax: pattern must start with "." or "/" (relative to project root) or alias path]')
   })
 })

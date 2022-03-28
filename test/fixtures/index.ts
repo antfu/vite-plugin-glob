@@ -19,3 +19,5 @@ export const eagerAs = import.meta.glob<ModuleType>([
   './modules/*.ts',
   '!**/index.ts',
 ], { eager: true, as: 'raw' })
+
+export const excludeSelf = import.meta.glob('./*.ts')

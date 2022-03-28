@@ -56,6 +56,10 @@ describe('fixture', async() => {
         './modules/a.ts': __vite_glob_next_5_0,
         './modules/b.ts': __vite_glob_next_5_1
         }
+        
+        export const excludeSelf = {
+        './sibling.ts': () => import('./sibling.ts')
+        }
         "
       `)
   })

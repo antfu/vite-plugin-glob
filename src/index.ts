@@ -4,8 +4,6 @@ import type { ParsedImportGlob, PluginOptions } from '../types'
 import { transform } from './transform'
 import { toAbsoluteGlob } from './glob'
 
-export * from '../types.d'
-
 export default function(options: PluginOptions = {}): Plugin {
   let server: ViteDevServer | undefined
   let config: ResolvedConfig

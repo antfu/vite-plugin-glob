@@ -12,7 +12,7 @@
     <script type="module" src="/src/main.ts"></script>
 
 <script type="module">
-const rawModules = import.meta.globEager('./*.json', { as: 'raw' })
+const rawModules = import.meta.globEager<string>('./*.json', { as: 'raw' })
 const globraw = {}
 Object.keys(rawModules).forEach((key) => {
   globraw[key] = JSON.parse(rawModules[key])

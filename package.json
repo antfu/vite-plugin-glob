@@ -32,7 +32,7 @@
   },
   "files": [
     "dist",
-    "*.d.ts"
+    "*.ts"
   ],
   "sideEffects": false,
   "scripts": {

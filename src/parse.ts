@@ -1,6 +1,6 @@
 import type { ArrayExpression } from 'estree'
 import type { TransformPluginContext } from 'rollup'
-import type { GlobOptions, ParsedImportGlob } from '../types'
+import type { GeneralGlobOptions, ParsedImportGlob } from '../types'
 
 const importGlobRE = /\bimport\.meta\.(importGlob|glob|globEager|globEagerDefault)(?:<\w+>)?\s*\(([\s\S]*?)\)/g
 
@@ -57,7 +57,7 @@ export function parseImportGlob(
     }
 
     // arg2
-    const options: GlobOptions<boolean> = {}
+    const options: GeneralGlobOptions = {}
     const arg2 = ast.elements[1]
     if (arg2) {
       if (arg2.type !== 'ObjectExpression')
@@ -67,7 +67,7 @@ export function parseImportGlob(
         if (property.type === 'SpreadElement' || property.key.type !== 'Identifier' || property.value.type !== 'Literal')
           throw new Error(`Could only use literals in ${fnName}`)
 
-        const name = property.key.name as keyof GlobOptions<boolean>
+        const name = property.key.name as keyof GeneralGlobOptions
         if (!(name in knownOptions))
           throw new Error(`Unknown options ${name}`)
 

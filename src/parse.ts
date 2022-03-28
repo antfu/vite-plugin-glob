@@ -10,6 +10,8 @@ const knownOptions = {
   export: 'string',
 }
 
+const forceDefaultAs = ['raw', 'url']
+
 export function parseImportGlob(
   code: string,
   parse: TransformPluginContext['parse'],
@@ -79,6 +81,13 @@ export function parseImportGlob(
         options[name] = property.value.value as any
       }
     }
+
+    if (options.as && forceDefaultAs.includes(options.as)) {
+      if (options.export && options.export !== 'default')
+        throw new Error(`Option "export" can only be "default" when "as" is "${options.as}", but got "${options.export}"`)
+      options.export = 'default'
+    }
+
     return {
       match,
       index,

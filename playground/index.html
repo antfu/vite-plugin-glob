@@ -8,6 +8,17 @@
   </head>
   <body>
     <div id="app"></div>
+    <div id="inline"></div>
     <script type="module" src="/src/main.ts"></script>
+
+<script type="module">
+const rawModules = import.meta.globEager('./*.json', { as: 'raw' })
+const globraw = {}
+Object.keys(rawModules).forEach((key) => {
+  globraw[key] = JSON.parse(rawModules[key])
+})
+document.getElementById('inline').textContent = JSON.stringify(globraw, null, 2)
+</script>
+
   </body>
 </html>

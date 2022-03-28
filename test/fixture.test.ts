@@ -1,7 +1,7 @@
 import { resolve } from 'path'
 import { promises as fs } from 'fs'
-import { describe, expect, it } from 'vitest'
 import { parse } from 'acorn'
+import { describe, expect, it } from 'vitest'
 import { transform } from '../src/transform'
 
 describe('fixture', async() => {
@@ -17,8 +17,8 @@ describe('fixture', async() => {
         import { name as __vite_glob_next_3_0 } from './modules/a.ts'
         import { name as __vite_glob_next_3_1 } from './modules/b.ts'
         import { name as __vite_glob_next_3_2 } from './modules/index.ts'
-        import * as __vite_glob_next_5_0 from './modules/a.ts?raw'
-        import * as __vite_glob_next_5_1 from './modules/b.ts?raw'
+        import { default as __vite_glob_next_5_0 } from './modules/a.ts?raw'
+        import { default as __vite_glob_next_5_1 } from './modules/b.ts?raw'
         export interface ModuleType {
           name: string
         }

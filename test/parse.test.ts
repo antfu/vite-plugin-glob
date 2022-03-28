@@ -14,8 +14,6 @@ function runError(input: string) {
   catch (e) {
     return e
   }
-
-  throw new Error('Should throw')
 }
 
 describe('parse positives', async() => {
@@ -98,6 +96,21 @@ describe('parse positives', async() => {
 })
 
 describe('parse negatives', async() => {
+  it('empty', async() => {
+    expect(runError('import.meta.importGlob()'))
+      .toMatchInlineSnapshot('[Error: Invalid glob import syntax: Expected 1-2 arguments, but got 0]')
+  })
+
+  it('3 args', async() => {
+    expect(runError('import.meta.importGlob("", {}, {})'))
+      .toMatchInlineSnapshot('[Error: Invalid glob import syntax: Expected 1-2 arguments, but got 3]')
+  })
+
+  it('in string', async() => {
+    expect(runError('"import.meta.importGlob()"'))
+      .toBeUndefined()
+  })
+
   it('variable', async() => {
     expect(runError('import.meta.importGlob(hey)'))
       .toMatchInlineSnapshot('[Error: Invalid glob import syntax: Could only use literals]')

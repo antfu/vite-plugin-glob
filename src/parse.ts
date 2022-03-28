@@ -41,8 +41,12 @@ export function parseImportGlob(
       ) as any
     }
     catch (e) {
-      (e as any).pos = start
-      throw e
+      const _e = e as any
+      if (_e.message && _e.message.startsWith('Unterminated string constant'))
+        return undefined!
+      if (_e.pos != null && code[_e.pos] === ')')
+        throw err('Expected 1-2 arguments, but got 0')
+      throw _e
     }
 
     let arg1: ArrayExpression | Literal
@@ -132,4 +136,5 @@ export function parseImportGlob(
       end,
     }
   })
+    .filter(Boolean)
 }

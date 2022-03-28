@@ -10,12 +10,12 @@ There are quite some scenarios that `import.meta.glob` wasn't considered when it
 
 However, some design considerataions might conflict with each other. For example, [`#2495 support ignore option for glob import`](https://github.com/vitejs/vite/pull/2495) supports the ignore glob as a second argument, while in [`#6953 import.meta.glob support ?raw`](https://github.com/vitejs/vite/pull/6953) we uses the second argument to specify glob query (and later been changed to `{ as }` via [`#7215 deprecate { assert: { type: raw }} in favor of { as: raw }`](https://github.com/vitejs/vite/pull/7215)).
 
-There are many other PRs that touches it's design as well:
+There are several other PRs that touches it's design as well:
 
 - [`#7209 support custom modifiers for glob imports`](https://github.com/vitejs/vite/pull/7209)
 - [`#7482 add ignore option to import.meta.glob`](https://github.com/vitejs/vite/pull/7482)
 
-With these two TC39 proposals ([`import-reflection`](https://github.com/tc39/proposal-import-reflection) and [`import-assertions`](https://github.com/tc39/proposal-import-assertions)) not settled yet, combining with different needs and design tradeoffs in each PR, making the good API design for `import.meta.glob` directly in Vite core becoming harder and more and more complex than it could be.
+With these two TC39 proposals ([`import-reflection`](https://github.com/tc39/proposal-import-reflection) and [`import-assertions`](https://github.com/tc39/proposal-import-assertions)) not settled yet, combining with different needs and design tradeoffs in each PR, making the good API design for `import.meta.glob` directly in Vite core becoming harder and more and more complex than it could be (with the cautions to not break existing usages).
 
 On top of that, in Vite we are having multiple macros for different options:
 
@@ -23,7 +23,7 @@ On top of that, in Vite we are having multiple macros for different options:
 - `import.meta.globEager`
 - `import.meta.globEagerDefault` (undocumented)
 
-That results in a quite large API surface to maintain and make the future extension harder.
+That results in a quite large API surface to maintain and make the future extension harder. For example, if we want `import.meta.globNamed` we might also need to add `import.meta.globEagerNamed`, making the counts to 5.
 
 Thus I propose to experiment with the `import.meta.glob` as an external plugin so we could introduce breaking change more easier and ships the implementation much faster (in Vite it takes days for a change to be meraged, and weeks to months for it to be landed in stable release). And when we feel the new design is able to cover most of the use cases, then we could embed it into Vite core as a one-time breaking change in v3.0.
 

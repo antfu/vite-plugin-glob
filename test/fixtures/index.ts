@@ -15,3 +15,5 @@ export const list3 = import.meta.importGlob<ModuleType>([
 ], { eager: true, as: 'raw' })
 
 export const list4 = import.meta.importGlob<ModuleType>('./modules/*.ts', { eager: true })
+
+export const list5 = import.meta.importGlob<string>('./modules/*.ts', { eager: true, export: 'name' })

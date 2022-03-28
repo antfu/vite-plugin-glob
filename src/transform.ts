@@ -3,7 +3,7 @@ import MagicString from 'magic-string'
 import fg from 'fast-glob'
 import type { ArrayExpression, Literal, ObjectExpression } from 'estree'
 import type { TransformPluginContext } from 'rollup'
-import type { GlobOptions, ParsedImportGlob } from './types'
+import type { GlobOptions, ParsedImportGlob } from '../types'
 
 const importGlobRE = /\bimport\.meta\.importGlob(?:<\w+>)?\(([\s\S]*?)\)/g
 const importPrefix = '__vite_glob_next_'
@@ -62,6 +62,8 @@ export async function transform(
 
   const s = new MagicString(code)
 
+  const staticImports: string[] = []
+
   await Promise.all(matches.map(async({ globs, match, options, index }) => {
     const files = await fg(globs, {
       dot: true,
@@ -72,16 +74,32 @@ export async function transform(
     const query = options.as ? `?${options.as}` : ''
 
     if (options.eager) {
-      const imports = files.map((file, i) => `import * as ${importPrefix}${index}_${i} from '${file}${query}'`).join('\n')
-      s.prepend(`${imports}\n`)
+      staticImports.push(
+        ...files.map((file, i) => {
+          const name = `${importPrefix}${index}_${i}`
+          const expression = options.export
+            ? `{ ${options.export} as ${name} }`
+            : `* as ${name}`
+          return `import ${expression} from '${file}${query}'`
+        }),
+      )
       const replacement = `{\n${files.map((file, i) => `'${file}': ${importPrefix}${index}_${i}`).join(',\n')}\n}`
       s.overwrite(start, end, replacement)
     }
     else {
-      const replacement = `{\n${files.map(i => `'${i}': () => import('${i}${query}')`).join(',\n')}\n}`
+      const objProps = files.map((i) => {
+        let importStatement = `import('${i}${query}')`
+        if (options.export)
+          importStatement += `.then(m => m['${options.export}'])`
+        return `'${i}': () => ${importStatement}`
+      })
+      const replacement = `{\n${objProps.join(',\n')}\n}`
       s.overwrite(start, end, replacement)
     }
   }))
+
+  if (staticImports.length)
+    s.prepend(`${staticImports.join('\n')}\n`)
 
   return {
     s,

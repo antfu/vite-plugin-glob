@@ -10,11 +10,14 @@ describe('should', async() => {
   it('transform', async() => {
     expect((await transform(code, id, parse))?.s.toString())
       .toMatchInlineSnapshot(`
-        "import * as __vite_glob_next_3_0 from './modules/a.ts'
+        "import * as __vite_glob_next_2_0 from './modules/a.ts?raw'
+        import * as __vite_glob_next_2_1 from './modules/b.ts?raw'
+        import * as __vite_glob_next_3_0 from './modules/a.ts'
         import * as __vite_glob_next_3_1 from './modules/b.ts'
         import * as __vite_glob_next_3_2 from './modules/index.ts'
-        import * as __vite_glob_next_2_0 from './modules/a.ts?raw'
-        import * as __vite_glob_next_2_1 from './modules/b.ts?raw'
+        import { name as __vite_glob_next_4_0 } from './modules/a.ts'
+        import { name as __vite_glob_next_4_1 } from './modules/b.ts'
+        import { name as __vite_glob_next_4_2 } from './modules/index.ts'
         export interface ModuleType {
           name: string
         }
@@ -39,6 +42,12 @@ describe('should', async() => {
         './modules/a.ts': __vite_glob_next_3_0,
         './modules/b.ts': __vite_glob_next_3_1,
         './modules/index.ts': __vite_glob_next_3_2
+        }
+        
+        export const list5 = {
+        './modules/a.ts': __vite_glob_next_4_0,
+        './modules/b.ts': __vite_glob_next_4_1,
+        './modules/index.ts': __vite_glob_next_4_2
         }
         "
       `)

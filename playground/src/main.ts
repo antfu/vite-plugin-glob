@@ -1,5 +1,5 @@
 import './style.css'
-import { list1, list2, list3, list4 } from '../../test/fixtures'
+import { list1, list2, list3, list4, list5 } from '../../test/fixtures'
 
 const app = document.querySelector<HTMLDivElement>('#app')!
 
@@ -14,4 +14,5 @@ await Promise.all(Object.values(list2).map(i => i()))
   })
 
 app.innerHTML += `${JSON.stringify(list3)}<br>`
-app.innerHTML += JSON.stringify(list4)
+app.innerHTML += `${JSON.stringify(list4)}<br>`
+app.innerHTML += JSON.stringify(list5)

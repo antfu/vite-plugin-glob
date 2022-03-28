@@ -1,10 +1,10 @@
 import type { ModuleNode, Plugin, ResolvedConfig, ViteDevServer } from 'vite'
 import { isMatch } from 'micromatch'
-import type { ParsedImportGlob, PluginOptions } from './types'
+import type { ParsedImportGlob, PluginOptions } from '../types'
 import { transform } from './transform'
 import { toAbsoluteGlob } from './glob'
 
-export * from './types'
+export * from '../types.d'
 
 export default function(_options: PluginOptions = {}): Plugin {
   let server: ViteDevServer | undefined
@@ -27,7 +27,6 @@ export default function(_options: PluginOptions = {}): Plugin {
     return modules
   }
 
-  // TODO: support HMR for new modules
   return {
     name: 'vite-plugin-glob',
     config() {

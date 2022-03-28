@@ -41,6 +41,8 @@ export default defineConfig({
 
 #### Basic
 
+> The API is named as `import.meta.importGlob` to avoid conflict with Vite's `import.meta.glob` in this implementation.
+
 ```ts
 import.meta.importGlob('./dir/*.js')
 

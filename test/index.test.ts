@@ -8,7 +8,7 @@ describe('should', async() => {
   const id = resolve(__dirname, './fixtures/index.ts')
 
   it('transform', async() => {
-    expect((await transform(code, id, parse))?.code)
+    expect((await transform(code, id, parse))?.s.toString())
       .toMatchInlineSnapshot(`
         "import * as __vite_glob_next_3_0 from './modules/a.ts'
         import * as __vite_glob_next_3_1 from './modules/b.ts'

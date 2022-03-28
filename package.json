@@ -1,6 +1,6 @@
 {
   "name": "vite-plugin-glob",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "packageManager": "pnpm@6.32.3",
   "description": "The design experiment for import.meta.glob from Vite",
   "homepage": "https://github.com/antfu/vite-plugin-glob#readme",

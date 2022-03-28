@@ -2,8 +2,7 @@
   "name": "vite-plugin-glob",
   "version": "0.0.3",
   "packageManager": "pnpm@6.32.3",
-  "description": "",
-  "keywords": [],
+  "description": "The design experiment for import.meta.glob from Vite",
   "homepage": "https://github.com/antfu/vite-plugin-glob#readme",
   "bugs": {
     "url": "https://github.com/antfu/vite-plugin-glob/issues"
@@ -26,17 +25,9 @@
     },
     "./client": {
       "types": "./client.d.ts"
-    }
-  },
-  "typesVersions": {
-    "*": {
-      "*": [
-        "./dist/*",
-        "./dist/index.d.ts"
-      ],
-      "./client": [
-        "./client.d.ts"
-      ]
+    },
+    "./takeover": {
+      "types": "./takeover.d.ts"
     }
   },
   "files": [

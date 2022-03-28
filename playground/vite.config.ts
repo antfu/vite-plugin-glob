@@ -3,7 +3,9 @@ import GlobPlugin from '../src/index'
 
 export default defineConfig({
   plugins: [
-    GlobPlugin(),
+    GlobPlugin({
+      takeover: true,
+    }),
   ],
   build: {
     target: 'esnext',

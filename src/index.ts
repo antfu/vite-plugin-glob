@@ -6,7 +6,7 @@ import { toAbsoluteGlob } from './glob'
 
 export * from '../types.d'
 
-export default function(_options: PluginOptions = {}): Plugin {
+export default function(options: PluginOptions = {}): Plugin {
   let server: ViteDevServer | undefined
   let config: ResolvedConfig
   const map = new Map<string, string[][]>()
@@ -71,7 +71,7 @@ export default function(_options: PluginOptions = {}): Plugin {
         return modules
     },
     async transform(code, id) {
-      const result = await transform(code, id, this.parse)
+      const result = await transform(code, id, this.parse, options)
       if (result) {
         updateMap(id, result.matches)
         return {

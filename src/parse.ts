@@ -2,8 +2,7 @@ import type { ArrayExpression } from 'estree'
 import type { TransformPluginContext } from 'rollup'
 import type { GlobOptions, ParsedImportGlob } from '../types'
 
-const fnName = 'import.meta.importGlob'
-const importGlobRE = /\bimport\.meta\.importGlob(?:<\w+>)?\(([\s\S]*?)\)/g
+const importGlobRE = /\bimport\.meta\.(importGlob|glob|globEager|globEagerDefault)(?:<\w+>)?\s*\(([\s\S]*?)\)/g
 
 const knownOptions = {
   as: 'string',
@@ -18,7 +17,9 @@ export function parseImportGlob(
   const matchs = Array.from(code.matchAll(importGlobRE))
 
   return matchs.map((match, index) => {
-    const argumentString = `[${match[1]}]`
+    const type = match[1]
+    const fnName = `import.meta.${type}`
+    const argumentString = `[${match[2]}]`
     // @ts-expect-error let me do it
     const ast = parse(argumentString, { ecmaVersion: 'latest' }).body[0].expression as ArrayExpression
 
@@ -83,6 +84,7 @@ export function parseImportGlob(
       index,
       globs,
       options,
+      type,
     }
   })
 }

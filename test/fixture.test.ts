@@ -9,7 +9,7 @@ describe('fixture', async() => {
     const id = resolve(__dirname, './fixtures/index.ts')
     const code = await fs.readFile(id, 'utf-8')
 
-    expect((await transform(code, id, parse))?.s.toString())
+    expect((await transform(code, id, parse, { takeover: true }))?.s.toString())
       .toMatchInlineSnapshot(`
         "import * as __vite_glob_next_1_0 from './modules/a.ts'
         import * as __vite_glob_next_1_1 from './modules/b.ts'

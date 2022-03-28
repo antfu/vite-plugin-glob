@@ -35,6 +35,7 @@ Thus I propose to experiment with the `import.meta.glob` as an external plugin s
 - Ability to provide custom query
 - Ability to only import default / named export
 - An unified API for different options
+- (Optional) Takeover Vite's `import.meta.glob`
 
 ## Install
 
@@ -49,7 +50,10 @@ import GlobPlugin from 'vite-plugin-glob'
 
 export default defineConfig({
   plugins: [
-    GlobPlugin(),
+    GlobPlugin({
+      // enable if you want to let this plugin interpret `import.meta.glob`
+      // takeover: true,
+    }),
   ],
 })
 ```
@@ -172,11 +176,14 @@ Add to `tsconfig.json`
 {
   "compilerOptions": {
     "types": [
-      "vite-plugin-glob/client"
+      "vite-plugin-glob/client",
+      // with takeover enabled
+      "vite-plugin-glob/takeover"
     ]
   }
 }
 ```
+
 
 You can use generic to specify the type of the modules.
 

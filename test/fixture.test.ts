@@ -46,7 +46,7 @@ describe('fixture', async() => {
         './modules/index.ts': __vite_glob_next_3_2
         }
         
-        export const named = {
+        export const namedDefault = {
         './modules/a.ts': () => import('./modules/a.ts').then(m => m['default']),
         './modules/b.ts': () => import('./modules/b.ts').then(m => m['default']),
         './modules/index.ts': () => import('./modules/index.ts').then(m => m['default'])

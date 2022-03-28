@@ -1,7 +1,7 @@
 import './style.css'
 import * as fixtures from '../../test/fixtures'
 
-const app = document.querySelector<HTMLDivElement>('#app')!
+const app = document.querySelector<HTMLPreElement>('#app')!
 
 const settled = Object.fromEntries(
   await Promise.all(Object.entries(fixtures)
@@ -15,4 +15,4 @@ const settled = Object.fromEntries(
   ),
 )
 
-app.innerHTML = `<pre>${JSON.stringify(settled, null, 2)}</pre>`
+app.textContent = JSON.stringify(settled, null, 2)

@@ -1,8 +1,8 @@
-import type { ArrayExpression } from 'estree'
-import type { TransformPluginContext } from 'rollup'
+import type { ArrayExpression, Literal, Node, SequenceExpression } from 'estree'
+import { parseExpressionAt } from 'acorn'
 import type { GeneralGlobOptions, ParsedImportGlob } from '../types'
 
-const importGlobRE = /\bimport\.meta\.(importGlob|glob|globEager|globEagerDefault)(?:<\w+>)?\s*\(([\s\S]*?)\)/g
+const importGlobRE = /\bimport\.meta\.(importGlob|glob|globEager|globEagerDefault)(?:<\w+>)?\s*\(/g
 
 const knownOptions = {
   as: 'string',
@@ -14,41 +14,54 @@ const forceDefaultAs = ['raw', 'url']
 
 export function parseImportGlob(
   code: string,
-  parse: TransformPluginContext['parse'],
 ): ParsedImportGlob[] {
   const matchs = Array.from(code.matchAll(importGlobRE))
 
   return matchs.map((match, index) => {
     const type = match[1]
-    const argumentString = `[${match[2]}]`
+    const start = match.index!
 
     const err = (msg: string) => {
       const e = new Error(`Invalid glob import syntax: ${msg}`)
-      ;(e as any).pos = match.index
+      ;(e as any).pos = start
       return e
     }
 
-    let ast: ArrayExpression = undefined!
+    let ast: SequenceExpression | Literal | ArrayExpression = undefined!
 
     try {
-      // @ts-expect-error let me do it
-      ast = parse(argumentString, { ecmaVersion: 'latest' }).body[0].expression as ArrayExpression
+      ast = parseExpressionAt(
+        code,
+        start + match[0].length - 1,
+        {
+          ecmaVersion: 'latest',
+          sourceType: 'module',
+          ranges: true,
+        },
+      ) as any
     }
     catch (e) {
-      (e as any).pos = match.index
+      (e as any).pos = start
       throw e
     }
 
-    if (ast.type !== 'ArrayExpression')
-      throw err('Unknown syntax')
+    let arg1: ArrayExpression | Literal
+    let arg2: Node | undefined
 
-    if (ast.elements.length < 1 || ast.elements.length > 2)
-      throw err(`Expected 1-2 arguments, but got ${ast.elements.length}`)
+    if (ast.type === 'SequenceExpression') {
+      if (ast.expressions.length < 1 || ast.expressions.length > 2)
+        throw err(`Expected 1-2 arguments, but got ${ast.expressions.length}`)
 
-    // arg1
-    const arg1 = ast.elements[0]!
-    if (arg1.type !== 'Literal' && arg1.type !== 'ArrayExpression')
+      arg1 = ast.expressions[0] as any
+      arg2 = ast.expressions[1]
+    }
+    else if (ast.type === 'Literal' || ast.type === 'ArrayExpression') {
+      arg1 = ast
+      arg2 = undefined
+    }
+    else {
       throw err('Could only use literals')
+    }
 
     const globs: string[] = []
     if (arg1.type === 'ArrayExpression') {
@@ -63,11 +76,14 @@ export function parseImportGlob(
         globs.push(element.value)
       }
     }
-    else {
+    else if (arg1.type === 'Literal') {
       if (typeof arg1.value !== 'string')
         throw err(`Expected glob to be a string, but got "${typeof arg1.value}"`)
 
       globs.push(arg1.value)
+    }
+    else {
+      throw err('Could only use literals')
     }
 
     if (!globs.every(i => i.match(/^[.\/!]/)))
@@ -75,7 +91,6 @@ export function parseImportGlob(
 
     // arg2
     const options: GeneralGlobOptions = {}
-    const arg2 = ast.elements[1]
     if (arg2) {
       if (arg2.type !== 'ObjectExpression')
         throw err(`Expected the second argument o to be a object literal, but got "${arg2.type}"`)
@@ -105,12 +120,16 @@ export function parseImportGlob(
       options.export = 'default'
     }
 
+    const end = ast.range![1] + 1
+
     return {
       match,
       index,
       globs,
       options,
       type,
+      start,
+      end,
     }
   })
 }

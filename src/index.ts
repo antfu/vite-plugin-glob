@@ -69,7 +69,7 @@ export default function(options: PluginOptions = {}): Plugin {
         return modules
     },
     async transform(code, id) {
-      const result = await transform(code, id, this.parse, options)
+      const result = await transform(code, id, options)
       if (result) {
         updateMap(id, result.matches)
         return {

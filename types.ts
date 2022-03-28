@@ -23,6 +23,8 @@ export interface ParsedImportGlob {
   globs: string[]
   options: GeneralGlobOptions
   type: string
+  start: number
+  end: number
 }
 
 export interface KnownAsType {

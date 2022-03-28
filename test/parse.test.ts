@@ -1,9 +1,8 @@
 import { describe, expect, it } from 'vitest'
-import { parse } from 'acorn'
 import { parseImportGlob } from '../src/parse'
 
 function run(input: string) {
-  return parseImportGlob(input, parse).map((i) => {
+  return parseImportGlob(input).map((i) => {
     return { globs: i.globs, options: i.options }
   })
 }
@@ -76,7 +75,7 @@ describe('parse positives', async() => {
     `)
   })
 
-  it.skip('options with multilines', async() => {
+  it('options with multilines', async() => {
     expect(run(`
     const modules = import.meta.glob(
       '/dir/**'
@@ -89,13 +88,9 @@ describe('parse positives', async() => {
       [
         {
           "globs": [
-            "./modules/*.ts",
-            "!./dir/*.{js,ts}",
+            "/dir/**",
           ],
-          "options": {
-            "eager": true,
-            "export": "named",
-          },
+          "options": {},
         },
       ]
     `)

@@ -1,6 +1,5 @@
 import { resolve } from 'path'
 import { promises as fs } from 'fs'
-import { parse } from 'acorn'
 import { describe, expect, it } from 'vitest'
 import { transform } from '../src/transform'
 
@@ -9,7 +8,7 @@ describe('fixture', async() => {
     const id = resolve(__dirname, './fixtures/index.ts')
     const code = await fs.readFile(id, 'utf-8')
 
-    expect((await transform(code, id, parse, { takeover: true }))?.s.toString())
+    expect((await transform(code, id, { takeover: true }))?.s.toString())
       .toMatchInlineSnapshot(`
         "import * as __vite_glob_next_1_0 from \\"./modules/a.ts\\"
         import * as __vite_glob_next_1_1 from \\"./modules/b.ts\\"

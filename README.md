@@ -6,7 +6,7 @@ The design experiment for [`import.meta.glob` from Vite](https://vitejs.dev/guid
 
 ## Motivations
 
-There are quite some scenarios that `import.meta.glob` wasn't considered when it's been implemented at the beginning. And we received several PRs to improve it.
+There are quite some scenarios that `import.meta.glob` wasn't considered when it's been implemented at the beginning. So we received quite a few PRs to improve it.
 
 However, some design considerataions might conflict with each other. For example, [`#2495 support ignore option for glob import`](https://github.com/vitejs/vite/pull/2495) supports the ignore glob as a second argument, while in [`#6953 import.meta.glob support ?raw`](https://github.com/vitejs/vite/pull/6953) we uses the second argument to specify glob query (and later been changed to `{ as }` via [`#7215 deprecate { assert: { type: raw }} in favor of { as: raw }`](https://github.com/vitejs/vite/pull/7215)).
 
@@ -51,7 +51,7 @@ import GlobPlugin from 'vite-plugin-glob'
 export default defineConfig({
   plugins: [
     GlobPlugin({
-      // enable if you want to let this plugin interpret `import.meta.glob`
+      // enable to let this plugin interpret `import.meta.glob`
       // takeover: true,
     }),
   ],
@@ -172,18 +172,19 @@ const modules = {
 
 Add to `tsconfig.json`
 
-```json
+<!-- eslint-skip -->
+
+```jsonc
 {
   "compilerOptions": {
     "types": [
       "vite-plugin-glob/client",
       // with takeover enabled
-      "vite-plugin-glob/takeover"
+      // "vite-plugin-glob/takeover"
     ]
   }
 }
 ```
-
 
 You can use generic to specify the type of the modules.
 

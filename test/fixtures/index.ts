@@ -30,3 +30,10 @@ export const customQueryObject = import.meta.glob('./*.ts', {
     raw: true,
   },
 })
+
+export const parent = import.meta.glob('../../playground/src/*.ts', { as: 'url' })
+
+export const rootMixedRelative = import.meta.glob([
+  '/*.ts',
+  '../../playground/*.json',
+], { as: 'url' })

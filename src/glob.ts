@@ -1,8 +1,6 @@
 import { posix } from 'path'
 
-const { join, dirname } = posix
-
-export function toAbsoluteGlob(glob: string, root: string, id: string): string {
+export function toAbsoluteGlob(glob: string, root: string, dirname: string): string {
   let pre = ''
   if (glob.startsWith('!')) {
     pre = '!'
@@ -10,9 +8,11 @@ export function toAbsoluteGlob(glob: string, root: string, id: string): string {
   }
 
   if (glob.startsWith('/'))
-    return pre + join(root, glob.slice(1))
+    return pre + posix.join(root, glob.slice(1))
   if (glob.startsWith('./'))
-    return pre + join(dirname(id), glob.slice(2))
+    return pre + posix.join(dirname, glob.slice(2))
+  if (glob.startsWith('../'))
+    return pre + posix.join(dirname, glob)
   if (glob.startsWith('**'))
     return pre + glob
 

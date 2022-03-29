@@ -11,4 +11,7 @@ export default defineConfig({
     target: 'esnext',
   },
   clearScreen: false,
+  optimizeDeps: {
+    entries: [],
+  },
 })

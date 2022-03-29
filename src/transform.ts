@@ -1,4 +1,4 @@
-import { basename, dirname } from 'path'
+import { posix } from 'path'
 import MagicString from 'magic-string'
 import fg from 'fast-glob'
 import { stringifyQuery } from 'ufo'
@@ -8,12 +8,17 @@ import { isCSSRequest } from './utils'
 
 const importPrefix = '__vite_glob_next_'
 
+const { basename, dirname, relative } = posix
+
 export async function transform(
   code: string,
   id: string,
+  root: string,
   options?: PluginOptions,
 ) {
-  let matches = parseImportGlob(code)
+  const filename = basename(id)
+  const dir = dirname(id)
+  let matches = parseImportGlob(code, dir, root)
 
   if (options?.takeover) {
     matches.forEach((i) => {
@@ -35,14 +40,17 @@ export async function transform(
   const s = new MagicString(code)
 
   const staticImports = (await Promise.all(
-    matches.map(async({ globs, options, index, start, end }) => {
-      const filename = basename(id)
-      const files = (await fg(globs, {
-        dot: true,
-        cwd: dirname(id),
-      }))
-        .filter(file => file !== filename)
-        .map(i => i.match(/^[.\/]/) ? i : `./${i}`)
+    matches.map(async({ absoluteGlobs, options, index, start, end }) => {
+      const files = (await fg(absoluteGlobs, { dot: true, absolute: true }))
+        .map((i) => {
+          const path = relative(dir, i)
+          if (path === filename)
+            return undefined!
+          if ('./'.includes(path[0]))
+            return path
+          return `./${path}`
+        })
+        .filter(Boolean)
         .sort()
 
       const objectProps: string[] = []
@@ -53,6 +61,7 @@ export async function transform(
         : typeof options.query === 'string'
           ? options.query
           : stringifyQuery(options.query as any)
+
       if (query && !query.startsWith('?'))
         query = `?${query}`
 

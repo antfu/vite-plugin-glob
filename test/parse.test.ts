@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest'
 import { parseImportGlob } from '../src/parse'
 
 function run(input: string) {
-  return parseImportGlob(input).map((i) => {
+  return parseImportGlob(input, process.cwd(), process.cwd()).map((i) => {
     return { globs: i.globs, options: i.options }
   })
 }

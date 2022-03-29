@@ -7,8 +7,9 @@ describe('fixture', async() => {
   it('transform', async() => {
     const id = resolve(__dirname, './fixtures/index.ts')
     const code = await fs.readFile(id, 'utf-8')
+    const root = process.cwd()
 
-    expect((await transform(code, id, { takeover: true }))?.s.toString())
+    expect((await transform(code, id, root, { takeover: true }))?.s.toString())
       .toMatchInlineSnapshot(`
         "import * as __vite_glob_next_1_0 from \\"./modules/a.ts\\"
         import * as __vite_glob_next_1_1 from \\"./modules/b.ts\\"
@@ -66,6 +67,18 @@ describe('fixture', async() => {
         
         export const customQueryObject = {
         \\"./sibling.ts\\": () => import(\\"./sibling.ts?foo=bar&raw=true\\")
+        }
+        
+        export const parent = {
+        \\"../../playground/src/main.ts\\": () => import(\\"../../playground/src/main.ts?url\\").then(m => m[\\"default\\"])
+        }
+        
+        export const rootMixedRelative = {
+        \\"../../build.config.ts\\": () => import(\\"../../build.config.ts?url\\").then(m => m[\\"default\\"]),
+        \\"../../client.d.ts\\": () => import(\\"../../client.d.ts?url\\").then(m => m[\\"default\\"]),
+        \\"../../playground/package.json\\": () => import(\\"../../playground/package.json?url\\").then(m => m[\\"default\\"]),
+        \\"../../takeover.d.ts\\": () => import(\\"../../takeover.d.ts?url\\").then(m => m[\\"default\\"]),
+        \\"../../types.ts\\": () => import(\\"../../types.ts?url\\").then(m => m[\\"default\\"])
         }
         "
       `)

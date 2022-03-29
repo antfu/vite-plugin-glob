@@ -2,7 +2,6 @@ import type { ModuleNode, Plugin, ResolvedConfig, ViteDevServer } from 'vite'
 import { isMatch } from 'micromatch'
 import type { ParsedImportGlob, PluginOptions } from '../types'
 import { transform } from './transform'
-import { toAbsoluteGlob } from './glob'
 
 export default function(options: PluginOptions = {}): Plugin {
   let server: ViteDevServer | undefined
@@ -10,7 +9,7 @@ export default function(options: PluginOptions = {}): Plugin {
   const map = new Map<string, string[][]>()
 
   function updateMap(id: string, info: ParsedImportGlob[]) {
-    const globs = info.map(i => i.globs.map(i => toAbsoluteGlob(i, config?.root || process.cwd(), id)))
+    const globs = info.map(i => i.absoluteGlobs)
     map.set(id, globs)
     // add those globs to the wather
     server?.watcher.add(globs.flatMap(i => i.filter(i => i[0] !== '!')))
@@ -69,7 +68,7 @@ export default function(options: PluginOptions = {}): Plugin {
         return modules
     },
     async transform(code, id) {
-      const result = await transform(code, id, options)
+      const result = await transform(code, id, config.root, options)
       if (result) {
         updateMap(id, result.matches)
         return {

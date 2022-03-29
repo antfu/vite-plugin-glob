@@ -1,6 +1,7 @@
 import type { ArrayExpression, Literal, Node, SequenceExpression } from 'estree'
 import { parseExpressionAt } from 'acorn'
 import type { GeneralGlobOptions, ParsedImportGlob } from '../types'
+import { toAbsoluteGlob } from './glob'
 
 const importGlobRE = /\bimport\.meta\.(importGlob|glob|globEager|globEagerDefault)(?:<\w+>)?\s*\(/g
 
@@ -14,6 +15,8 @@ const forceDefaultAs = ['raw', 'url']
 
 export function parseImportGlob(
   code: string,
+  dir: string,
+  root: string,
 ): ParsedImportGlob[] {
   const matchs = Array.from(code.matchAll(importGlobRE))
 
@@ -155,10 +158,13 @@ export function parseImportGlob(
 
     const end = ast.range![1] + 1
 
+    const absoluteGlobs = globs.map(glob => toAbsoluteGlob(glob, root, dir))
+
     return {
       match,
       index,
       globs,
+      absoluteGlobs,
       options,
       type,
       start,

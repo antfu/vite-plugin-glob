@@ -25,6 +25,7 @@ export interface ParsedImportGlob {
   match: RegExpMatchArray
   index: number
   globs: string[]
+  absoluteGlobs: string[]
   options: GeneralGlobOptions
   type: string
   start: number

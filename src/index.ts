@@ -9,16 +9,16 @@ export default function(options: PluginOptions = {}): Plugin {
   const map = new Map<string, string[][]>()
 
   function updateMap(id: string, info: ParsedImportGlob[]) {
-    const globs = info.map(i => i.absoluteGlobs)
-    map.set(id, globs)
-    // add those globs to the watcher
-    server?.watcher.add(globs.flatMap(i => i.filter(i => i[0] !== '!')))
+    const allGlobs = info.map(i => i.absoluteGlobs)
+    map.set(id, allGlobs)
+    // add those allGlobs to the watcher
+    server?.watcher.add(allGlobs.flatMap(i => i.filter(i => i[0] !== '!')))
   }
 
   function getAffectedModules(file: string) {
     const modules: ModuleNode[] = []
-    for (const [id, globs] of map) {
-      if (globs.some(glob => isMatch(file, glob)))
+    for (const [id, allGlobs] of map) {
+      if (allGlobs.some(glob => isMatch(file, glob)))
         modules.push(...(server?.moduleGraph.getModulesByFile(id) || []))
     }
     return modules

@@ -41,7 +41,7 @@ export async function transform(
   const staticImports = (await Promise.all(
     matches.map(async({ globsResolved, options, index, start, end }) => {
       const files = (await fg(globsResolved.map(g => g.globResolved), { dot: true, absolute: true, cwd: root }))
-        .filter((file) => file!==id)
+        .filter(file => file !== id)
         .sort()
 
       const objectProps: string[] = []
@@ -56,33 +56,34 @@ export async function transform(
       if (query && !query.startsWith('?'))
         query = `?${query}`
 
-      const filePathsRelativeToRoot =
-        options.filePathsRelativeToRoot ?? globsResolved.some((g) => g.globOriginal.startsWith('/'))
+      const filePathsRelativeToRoot
+        = options.filePathsRelativeToRoot ?? globsResolved.some(g => g.globOriginal.startsWith('/'))
       const resolvePaths = (file: string) => {
         assert(file.startsWith('/'))
 
         let importPath = relative(dir, file)
         assert(!importPath.startsWith('/'))
-        if (!importPath.startsWith('.')) {
+        if (!importPath.startsWith('.'))
           importPath = `./${importPath}`
-        }
 
         let filePath: string
         if (!filePathsRelativeToRoot) {
           filePath = importPath
-        } else {
+        }
+        else {
           filePath = relative(root, file)
           assert(!filePath.startsWith('/'))
-          if (!filePath.startsWith('.')) {
+          if (!filePath.startsWith('.'))
             filePath = `/${filePath}`
-          }
         }
 
         return { filePath, importPath }
       }
 
       files.forEach((file, i) => {
-        let { filePath, importPath } = resolvePaths(file)
+        const paths = resolvePaths(file)
+        const { filePath } = paths
+        let { importPath } = paths
 
         importPath = `${importPath}${query}`
         if (isCSSRequest(file))

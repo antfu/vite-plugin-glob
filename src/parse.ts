@@ -8,7 +8,7 @@ const knownOptions = {
   as: 'string',
   eager: 'boolean',
   export: 'string',
-}
+} as const
 
 const forceDefaultAs = ['raw', 'url']
 
@@ -83,7 +83,6 @@ export function parseImportGlob(
     else if (arg1.type === 'Literal') {
       if (typeof arg1.value !== 'string')
         throw err(`Expected glob to be a string, but got "${typeof arg1.value}"`)
-
       globs.push(arg1.value)
     }
     else {
@@ -100,12 +99,37 @@ export function parseImportGlob(
         throw err(`Expected the second argument o to be a object literal, but got "${arg2.type}"`)
 
       for (const property of arg2.properties) {
-        if (property.type === 'SpreadElement' || property.key.type !== 'Identifier' || property.value.type !== 'Literal')
+        if (property.type === 'SpreadElement' || property.key.type !== 'Identifier')
           throw err('Could only use literals')
 
         const name = property.key.name as keyof GeneralGlobOptions
+
+        if (name === 'query') {
+          if (property.value.type === 'ObjectExpression') {
+            const data: Record<string, string> = {}
+            for (const prop of property.value.properties) {
+              if (prop.type === 'SpreadElement' || prop.key.type !== 'Identifier' || prop.value.type !== 'Literal')
+                throw err('Could only use literals')
+              data[prop.key.name] = prop.value.value as any
+            }
+            options.query = data
+          }
+          else if (property.value.type === 'Literal') {
+            if (typeof property.value.value !== 'string')
+              throw err(`Expected query to be a string, but got "${typeof property.value.value}"`)
+            options.query = property.value.value
+          }
+          else {
+            throw err('Could only use literals')
+          }
+          continue
+        }
+
         if (!(name in knownOptions))
           throw err(`Unknown options ${name}`)
+
+        if (property.value.type !== 'Literal')
+          throw err('Could only use literals')
 
         const valueType = typeof property.value.value
         if (valueType === 'undefined')
@@ -113,7 +137,6 @@ export function parseImportGlob(
 
         if (valueType !== knownOptions[name])
           throw err(`Expected the type of option "${name}" to be "${knownOptions[name]}", but got "${valueType}"`)
-
         options[name] = property.value.value as any
       }
     }
@@ -123,6 +146,12 @@ export function parseImportGlob(
         throw err(`Option "export" can only be "default" when "as" is "${options.as}", but got "${options.export}"`)
       options.export = 'default'
     }
+
+    if (options.as && options.query)
+      throw err('Options "as" and "query" cannot be used together')
+
+    if (options.as)
+      options.query = options.as
 
     const end = ast.range![1] + 1
 

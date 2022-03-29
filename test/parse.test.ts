@@ -93,9 +93,42 @@ describe('parse positives', async() => {
       ]
     `)
   })
+
+  it('options query', async() => {
+    expect(run(`
+    const modules = import.meta.glob(
+      '/dir/**',
+      {
+        query: {
+          foo: 'bar',
+          raw: true,
+        }
+      }
+    )
+    `)).toMatchInlineSnapshot(`
+      [
+        {
+          "globs": [
+            "/dir/**",
+          ],
+          "options": {
+            "query": {
+              "foo": "bar",
+              "raw": true,
+            },
+          },
+        },
+      ]
+    `)
+  })
 })
 
 describe('parse negatives', async() => {
+  it('syntax error', async() => {
+    expect(runError('import.meta.importGlob('))
+      .toMatchInlineSnapshot('[SyntaxError: Unexpected token (1:23)]')
+  })
+
   it('empty', async() => {
     expect(runError('import.meta.importGlob()'))
       .toMatchInlineSnapshot('[Error: Invalid glob import syntax: Expected 1-2 arguments, but got 0]')
@@ -148,5 +181,18 @@ describe('parse negatives', async() => {
       .toMatchInlineSnapshot('[Error: Invalid glob import syntax: pattern must start with "." or "/" (relative to project root) or alias path]')
     expect(runError('import.meta.importGlob("hey", { eager: 123 })'))
       .toMatchInlineSnapshot('[Error: Invalid glob import syntax: pattern must start with "." or "/" (relative to project root) or alias path]')
+  })
+
+  it('options query', async() => {
+    expect(runError('import.meta.importGlob("./*.js", { as: "raw", query: "hi" })'))
+      .toMatchInlineSnapshot('[Error: Invalid glob import syntax: Options "as" and "query" cannot be used together]')
+    expect(runError('import.meta.importGlob("./*.js", { query: 123 })'))
+      .toMatchInlineSnapshot('[Error: Invalid glob import syntax: Expected query to be a string, but got "number"]')
+    expect(runError('import.meta.importGlob("./*.js", { query: { foo: {} } })'))
+      .toMatchInlineSnapshot('[Error: Invalid glob import syntax: Could only use literals]')
+    expect(runError('import.meta.importGlob("./*.js", { query: { foo: hey } })'))
+      .toMatchInlineSnapshot('[Error: Invalid glob import syntax: Could only use literals]')
+    expect(runError('import.meta.importGlob("./*.js", { query: { foo: 123, ...a } })'))
+      .toMatchInlineSnapshot('[Error: Invalid glob import syntax: Could only use literals]')
   })
 })

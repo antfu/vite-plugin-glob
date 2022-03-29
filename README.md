@@ -32,7 +32,7 @@ Thus I propose to experiment with the `import.meta.glob` as an external plugin s
 - Globing for multiple patterns
 - Globing ignore
 - HMR on file modification / addition / deletion
-- Ability to provide custom query
+- Ability to provide custom queries
 - Ability to only import default / named export
 - An unified API for different options
 - (Optional) Takeover Vite's `import.meta.glob`
@@ -114,7 +114,7 @@ const modules = {
 */
 ```
 
-#### Custom Query
+#### Import As
 
 ```ts
 const modules = import.meta.importGlob('./dir/*.js', { as: 'raw' })
@@ -166,6 +166,17 @@ const modules = {
   './dir/bar.js': __glob__0_1
 }
 */
+```
+
+#### Custom Queries
+
+```ts
+const setups = import.meta.importGlob('./dir/*.js', { query: { foo: 'bar', bar: true } })
+
+/* {
+  './dir/foo.js': () => import('./dir/foo.js?foo=bar&bar=true').then(m => m.setup),
+  './dir/bar.js': () => import('./dir/bar.js?foo=bar&bar=true').then(m => m.setup),
+} */
 ```
 
 ## TypeScript

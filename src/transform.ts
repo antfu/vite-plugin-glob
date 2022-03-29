@@ -1,6 +1,7 @@
 import { basename, dirname } from 'path'
 import MagicString from 'magic-string'
 import fg from 'fast-glob'
+import { stringifyQuery } from 'ufo'
 import type { PluginOptions } from '../types'
 import { parseImportGlob } from './parse'
 import { isCSSRequest } from './utils'
@@ -47,7 +48,13 @@ export async function transform(
       const objectProps: string[] = []
       const staticImports: string[] = []
 
-      const query = options.as ? `?${options.as}` : ''
+      let query = !options.query
+        ? ''
+        : typeof options.query === 'string'
+          ? options.query
+          : stringifyQuery(options.query as any)
+      if (query && !query.startsWith('?'))
+        query = `?${query}`
 
       files.forEach((file, i) => {
         let importPath = `${file}${query}`

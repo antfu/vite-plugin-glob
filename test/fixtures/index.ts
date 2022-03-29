@@ -21,3 +21,12 @@ export const eagerAs = import.meta.glob<ModuleType>([
 ], { eager: true, as: 'raw' })
 
 export const excludeSelf = import.meta.glob('./*.ts')
+
+export const customQueryString = import.meta.glob('./*.ts', { query: 'custom' })
+
+export const customQueryObject = import.meta.glob('./*.ts', {
+  query: {
+    foo: 'bar',
+    raw: true,
+  },
+})

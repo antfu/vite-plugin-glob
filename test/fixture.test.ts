@@ -59,6 +59,14 @@ describe('fixture', async() => {
         export const excludeSelf = {
         \\"./sibling.ts\\": () => import(\\"./sibling.ts\\")
         }
+        
+        export const customQueryString = {
+        \\"./sibling.ts\\": () => import(\\"./sibling.ts?custom\\")
+        }
+        
+        export const customQueryObject = {
+        \\"./sibling.ts\\": () => import(\\"./sibling.ts?foo=bar&raw=true\\")
+        }
         "
       `)
   })

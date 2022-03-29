@@ -1,6 +1,6 @@
 export interface GlobOptions<Eager extends boolean, AsType extends string> {
   /**
-   * Custom query for the import url.
+   * Import type for the import url.
    */
   as?: AsType
   /**
@@ -13,6 +13,10 @@ export interface GlobOptions<Eager extends boolean, AsType extends string> {
    * Import only the specific named export. Set to `default` to import the default export.
    */
   export?: string
+  /**
+   * Custom queries
+   */
+  query?: string | Record<string, string | number | boolean>
 }
 
 export type GeneralGlobOptions = GlobOptions<boolean, string>

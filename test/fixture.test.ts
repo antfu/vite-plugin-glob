@@ -80,6 +80,14 @@ describe('fixture', async() => {
         \\"../../takeover.d.ts\\": () => import(\\"../../takeover.d.ts?url\\").then(m => m[\\"default\\"]),
         \\"../../types.ts\\": () => import(\\"../../types.ts?url\\").then(m => m[\\"default\\"])
         }
+        
+        export const restoreFileExtension1 = {
+        \\"./sibling.ts\\": () => import(\\"./sibling.ts?foo=bar&lang.ts\\")
+        }
+        
+        export const restoreFileExtension2 = {
+        \\"./sibling.ts\\": () => import(\\"./sibling.ts?lang.ts\\")
+        }
         "
       `)
   })

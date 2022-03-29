@@ -66,9 +66,18 @@ export async function transform(
         query = `?${query}`
 
       files.forEach((file, i) => {
-        let importPath = `${file}${query}`
+        let importPath = file
+
         if (isCSSRequest(file))
-          importPath = query ? `${importPath}&used` : `${importPath}?used`
+          query = query ? `${query}&used` : '?used'
+
+        if (options.queryRestoreFileExtension) {
+          const fileExtension = basename(file).split('.').slice(-1)[0]
+          if (fileExtension)
+            query = `${query ? `${query}&` : '?'}lang.${fileExtension}`
+        }
+
+        importPath = `${importPath}${query}`
 
         if (options.eager) {
           const variableName = `${importPrefix}${index}_${i}`

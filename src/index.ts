@@ -11,7 +11,7 @@ export default function(options: PluginOptions = {}): Plugin {
   function updateMap(id: string, info: ParsedImportGlob[]) {
     const globs = info.map(i => i.absoluteGlobs)
     map.set(id, globs)
-    // add those globs to the wather
+    // add those globs to the watcher
     server?.watcher.add(globs.flatMap(i => i.filter(i => i[0] !== '!')))
   }
 

@@ -41,7 +41,7 @@ export async function transform(
 
   const staticImports = (await Promise.all(
     matches.map(async({ absoluteGlobs, options, index, start, end }) => {
-      const files = (await fg(absoluteGlobs, { dot: true, absolute: true }))
+      const files = (await fg(absoluteGlobs, { dot: true, absolute: true, cwd: root }))
         .map((i) => {
           const path = relative(dir, i)
           if (path === filename)

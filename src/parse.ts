@@ -9,6 +9,7 @@ const knownOptions = {
   as: 'string',
   eager: 'boolean',
   export: 'string',
+  includeNodeModules: 'boolean',
 } as const
 
 const forceDefaultAs = ['raw', 'url']

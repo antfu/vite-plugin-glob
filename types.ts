@@ -17,6 +17,12 @@ export interface GlobOptions<Eager extends boolean, AsType extends string> {
    * Custom queries
    */
   query?: string | Record<string, string | number | boolean>
+  /**
+   * Also search for files inside `/node_modules/`. BECAREFUL: this is slow.
+   *
+   * @default false
+   */
+  includeNodeModules?: boolean
 }
 
 export type GeneralGlobOptions = GlobOptions<boolean, string>

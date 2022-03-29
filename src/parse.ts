@@ -9,6 +9,7 @@ const knownOptions = {
   as: 'string',
   eager: 'boolean',
   export: 'string',
+  filePathsRelativeToRoot: 'boolean'
 } as const
 
 const forceDefaultAs = ['raw', 'url']
@@ -158,13 +159,13 @@ export function parseImportGlob(
 
     const end = ast.range![1] + 1
 
-    const absoluteGlobs = globs.map(glob => toAbsoluteGlob(glob, root, dir))
+    const globsResolved = globs.map((glob) => ({ globOriginal: glob, globResolved: toAbsoluteGlob(glob, root, dir) }))
 
     return {
       match,
       index,
       globs,
-      absoluteGlobs,
+      globsResolved,
       options,
       type,
       start,

@@ -17,6 +17,10 @@ export interface GlobOptions<Eager extends boolean, AsType extends string> {
    * Custom queries
    */
   query?: string | Record<string, string | number | boolean>
+  /**
+   * Make the found files' paths relative to `root` (when set to `true`), or relative to the importing module's directory (when set to `false`).
+   */
+  filePathsRelativeToRoot?: boolean
 }
 
 export type GeneralGlobOptions = GlobOptions<boolean, string>
@@ -25,7 +29,7 @@ export interface ParsedImportGlob {
   match: RegExpMatchArray
   index: number
   globs: string[]
-  absoluteGlobs: string[]
+  globsResolved: { globOriginal: string; globResolved: string }[]
   options: GeneralGlobOptions
   type: string
   start: number

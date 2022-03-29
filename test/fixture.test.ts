@@ -74,11 +74,11 @@ describe('fixture', async() => {
         }
         
         export const rootMixedRelative = {
-        \\"../../build.config.ts\\": () => import(\\"../../build.config.ts?url\\").then(m => m[\\"default\\"]),
-        \\"../../client.d.ts\\": () => import(\\"../../client.d.ts?url\\").then(m => m[\\"default\\"]),
-        \\"../../playground/package.json\\": () => import(\\"../../playground/package.json?url\\").then(m => m[\\"default\\"]),
-        \\"../../takeover.d.ts\\": () => import(\\"../../takeover.d.ts?url\\").then(m => m[\\"default\\"]),
-        \\"../../types.ts\\": () => import(\\"../../types.ts?url\\").then(m => m[\\"default\\"])
+        \\"/build.config.ts\\": () => import(\\"../../build.config.ts?url\\").then(m => m[\\"default\\"]),
+        \\"/client.d.ts\\": () => import(\\"../../client.d.ts?url\\").then(m => m[\\"default\\"]),
+        \\"/playground/package.json\\": () => import(\\"../../playground/package.json?url\\").then(m => m[\\"default\\"]),
+        \\"/takeover.d.ts\\": () => import(\\"../../takeover.d.ts?url\\").then(m => m[\\"default\\"]),
+        \\"/types.ts\\": () => import(\\"../../types.ts?url\\").then(m => m[\\"default\\"])
         }
         "
       `)

@@ -17,8 +17,8 @@ describe('fixture', async() => {
         import { name as __vite_glob_next_3_0 } from \\"./modules/a.ts\\"
         import { name as __vite_glob_next_3_1 } from \\"./modules/b.ts\\"
         import { name as __vite_glob_next_3_2 } from \\"./modules/index.ts\\"
-        import { default as __vite_glob_next_5_0 } from \\"./modules/a.ts?raw\\"
-        import { default as __vite_glob_next_5_1 } from \\"./modules/b.ts?raw\\"
+        import { default as __vite_glob_next_5_0 } from \\"./modules/a.ts?raw?raw\\"
+        import { default as __vite_glob_next_5_1 } from \\"./modules/b.ts?raw?raw\\"
         export interface ModuleType {
           name: string
         }
@@ -62,23 +62,23 @@ describe('fixture', async() => {
         }
         
         export const customQueryString = {
-        \\"./sibling.ts\\": () => import(\\"./sibling.ts?custom\\")
+        \\"./sibling.ts\\": () => import(\\"./sibling.ts?custom?custom&lang.ts\\")
         }
         
         export const customQueryObject = {
-        \\"./sibling.ts\\": () => import(\\"./sibling.ts?foo=bar&raw=true\\")
+        \\"./sibling.ts\\": () => import(\\"./sibling.ts?foo=bar&raw=true?foo=bar&raw=true&lang.ts\\")
         }
         
         export const parent = {
-        \\"../../playground/src/main.ts\\": () => import(\\"../../playground/src/main.ts?url\\").then(m => m[\\"default\\"])
+        \\"../../playground/src/main.ts\\": () => import(\\"../../playground/src/main.ts?url?url&lang.ts\\").then(m => m[\\"default\\"])
         }
         
         export const rootMixedRelative = {
-        \\"/build.config.ts\\": () => import(\\"../../build.config.ts?url\\").then(m => m[\\"default\\"]),
-        \\"/client.d.ts\\": () => import(\\"../../client.d.ts?url\\").then(m => m[\\"default\\"]),
-        \\"/playground/package.json\\": () => import(\\"../../playground/package.json?url\\").then(m => m[\\"default\\"]),
-        \\"/takeover.d.ts\\": () => import(\\"../../takeover.d.ts?url\\").then(m => m[\\"default\\"]),
-        \\"/types.ts\\": () => import(\\"../../types.ts?url\\").then(m => m[\\"default\\"])
+        \\"/build.config.ts\\": () => import(\\"../../build.config.ts?url?url&lang.ts\\").then(m => m[\\"default\\"]),
+        \\"/client.d.ts\\": () => import(\\"../../client.d.ts?url?url&lang.ts\\").then(m => m[\\"default\\"]),
+        \\"/playground/package.json\\": () => import(\\"../../playground/package.json?url?url&lang.json\\").then(m => m[\\"default\\"]),
+        \\"/takeover.d.ts\\": () => import(\\"../../takeover.d.ts?url?url&lang.ts\\").then(m => m[\\"default\\"]),
+        \\"/types.ts\\": () => import(\\"../../types.ts?url?url&lang.ts\\").then(m => m[\\"default\\"])
         }
         "
       `)

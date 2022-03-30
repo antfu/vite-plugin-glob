@@ -1,4 +1,4 @@
-import { posix } from 'path'
+import { basename, posix } from 'path'
 import MagicString from 'magic-string'
 import fg from 'fast-glob'
 import { stringifyQuery } from 'ufo'
@@ -80,12 +80,21 @@ export async function transform(
 
       files.forEach((file, i) => {
         const paths = resolvePaths(file)
-        const { filePath } = paths
-        let { importPath } = paths
+        const filePath = paths.filePath
+        let importPath = paths.importPath
+        let importQuery = query
 
         importPath = `${importPath}${query}`
         if (isCSSRequest(file))
-          importPath = query ? `${importPath}&used` : `${importPath}?used`
+          importQuery = importQuery ? `${importQuery}&used` : '?used'
+
+        if (importQuery && importQuery !== '?raw') {
+          const fileExtension = basename(file).split('.').slice(-1)[0]
+          if (fileExtension)
+            importQuery = `${importQuery}&lang.${fileExtension}`
+        }
+
+        importPath = `${importPath}${importQuery}`
 
         if (options.eager) {
           const variableName = `${importPrefix}${index}_${i}`

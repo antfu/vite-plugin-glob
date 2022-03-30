@@ -2,6 +2,7 @@ import { basename, posix } from 'path'
 import MagicString from 'magic-string'
 import fg from 'fast-glob'
 import { stringifyQuery } from 'ufo'
+import { scan } from 'micromatch'
 import type { PluginOptions } from '../types'
 import { parseImportGlob } from './parse'
 import { assert, isCSSRequest } from './utils'
@@ -40,14 +41,15 @@ export async function transform(
 
   const staticImports = (await Promise.all(
     matches.map(async({ globsResolved, isRelative, options, index, start, end }) => {
+      const cwd = getCommonAncestor(globsResolved) ?? root
       const files = (await fg(globsResolved, {
-        cwd: root,
+        cwd,
         absolute: true,
         dot: !!options.exhaustive,
         ignore: options.exhaustive
           ? []
           // When using `isAbsolute: true`, we need to prepend `cwd` to ignore patterns
-          : [join(root, '**/node_modules/**')],
+          : [join(cwd, '**/node_modules/**')],
       }))
         .filter(file => file !== id)
         .sort()
@@ -134,4 +136,21 @@ export async function transform(
     s,
     matches,
   }
+}
+
+function getCommonAncestor(globsResolved: string[]): null | string {
+  const bases = globsResolved.filter(g => !g.startsWith('!')).map(glob => scan(glob).base)
+  if (!bases.length)
+    return null
+
+  let commonAncestor = '/'
+  const dirS = bases[0].split('/')
+  for (let i = 0; i < dirS.length; i++) {
+    const candidate = dirS.slice(0, i + 1).join('/')
+    if (bases.every(base => base.startsWith(candidate)))
+      commonAncestor = candidate
+    else
+      break
+  }
+  return commonAncestor
 }

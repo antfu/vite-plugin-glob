@@ -37,3 +37,11 @@ export const rootMixedRelative = import.meta.glob([
   '/*.ts',
   '../../playground/*.json',
 ], { as: 'url' })
+
+export const cleverCwd1 = import.meta.glob('./node_modules/framework/**/*.page.js')
+
+export const cleverCwd2 = import.meta.glob([
+  './modules/*.ts',
+  '../../playground/src/*.ts',
+  '!**/index.ts',
+])

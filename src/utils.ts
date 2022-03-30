@@ -1,3 +1,4 @@
+import path from 'path'
 import { scan } from 'micromatch'
 
 const cssLangs = '\\.(css|less|sass|scss|styl|stylus|pcss|postcss)($|\\?)'
@@ -19,11 +20,19 @@ export function assert(condition: unknown): asserts condition {
 }
 
 export function getCommonBase(globsResolved: string[]): null | string {
-  const bases = globsResolved.filter(g => !g.startsWith('!')).map(glob => scan(glob).base)
+  const bases = globsResolved.filter(g => !g.startsWith('!')).map((glob) => {
+    let { base } = scan(glob)
+    // `scan('a/foo.js')` returns `base: 'a/foo.js'`
+    if (path.posix.basename(base).includes('.'))
+      base = path.posix.dirname(base)
+
+    return base
+  })
+
   if (!bases.length)
     return null
 
-  let commonAncestor = '/'
+  let commonAncestor = ''
   const dirS = bases[0].split('/')
   for (let i = 0; i < dirS.length; i++) {
     const candidate = dirS.slice(0, i + 1).join('/')
@@ -32,5 +41,8 @@ export function getCommonBase(globsResolved: string[]): null | string {
     else
       break
   }
+  if (!commonAncestor)
+    commonAncestor = '/'
+
   return commonAncestor
 }

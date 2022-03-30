@@ -159,13 +159,15 @@ export function parseImportGlob(
 
     const end = ast.range![1] + 1
 
-    const absoluteGlobs = globs.map(glob => toAbsoluteGlob(glob, root, dir))
+    const globsResolved = globs.map(glob => toAbsoluteGlob(glob, root, dir))
+    const isRelative = globs.every(i => '.!'.includes(i[0]))
 
     return {
       match,
       index,
       globs,
-      absoluteGlobs,
+      globsResolved,
+      isRelative,
       options,
       type,
       start,

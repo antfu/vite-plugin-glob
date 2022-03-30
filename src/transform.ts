@@ -4,11 +4,11 @@ import fg from 'fast-glob'
 import { stringifyQuery } from 'ufo'
 import type { PluginOptions } from '../types'
 import { parseImportGlob } from './parse'
-import { isCSSRequest } from './utils'
+import { assert, isCSSRequest } from './utils'
 
 const importPrefix = '__vite_glob_next_'
 
-const { basename, dirname, relative } = posix
+const { dirname, relative } = posix
 
 export async function transform(
   code: string,
@@ -16,7 +16,6 @@ export async function transform(
   root: string,
   options?: PluginOptions,
 ) {
-  const filename = basename(id)
   const dir = dirname(id)
   let matches = parseImportGlob(code, dir, root)
 
@@ -40,17 +39,9 @@ export async function transform(
   const s = new MagicString(code)
 
   const staticImports = (await Promise.all(
-    matches.map(async({ absoluteGlobs, options, index, start, end }) => {
-      const files = (await fg(absoluteGlobs, { dot: true, absolute: true, cwd: root }))
-        .map((i) => {
-          const path = relative(dir, i)
-          if (path === filename)
-            return undefined!
-          if ('./'.includes(path[0]))
-            return path
-          return `./${path}`
-        })
-        .filter(Boolean)
+    matches.map(async({ globsResolved, isRelative, options, index, start, end }) => {
+      const files = (await fg(globsResolved, { dot: true, absolute: true, cwd: root }))
+        .filter(file => file !== id)
         .sort()
 
       const objectProps: string[] = []
@@ -65,8 +56,34 @@ export async function transform(
       if (query && !query.startsWith('?'))
         query = `?${query}`
 
+      const resolvePaths = (file: string) => {
+        assert(file.startsWith('/'))
+
+        let importPath = relative(dir, file)
+        assert(!importPath.startsWith('/'))
+        if (!importPath.startsWith('.'))
+          importPath = `./${importPath}`
+
+        let filePath: string
+        if (isRelative) {
+          filePath = importPath
+        }
+        else {
+          filePath = relative(root, file)
+          assert(!filePath.startsWith('/'))
+          if (!filePath.startsWith('.'))
+            filePath = `/${filePath}`
+        }
+
+        return { filePath, importPath }
+      }
+
       files.forEach((file, i) => {
-        let importPath = `${file}${query}`
+        const paths = resolvePaths(file)
+        const { filePath } = paths
+        let { importPath } = paths
+
+        importPath = `${importPath}${query}`
         if (isCSSRequest(file))
           importPath = query ? `${importPath}&used` : `${importPath}?used`
 
@@ -76,13 +93,13 @@ export async function transform(
             ? `{ ${options.export} as ${variableName} }`
             : `* as ${variableName}`
           staticImports.push(`import ${expression} from ${JSON.stringify(importPath)}`)
-          objectProps.push(`${JSON.stringify(file)}: ${variableName}`)
+          objectProps.push(`${JSON.stringify(filePath)}: ${variableName}`)
         }
         else {
           let importStatement = `import(${JSON.stringify(importPath)})`
           if (options.export)
             importStatement += `.then(m => m[${JSON.stringify(options.export)}])`
-          objectProps.push(`${JSON.stringify(file)}: () => ${importStatement}`)
+          objectProps.push(`${JSON.stringify(filePath)}: () => ${importStatement}`)
         }
       })
 

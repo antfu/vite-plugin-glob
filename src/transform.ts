@@ -4,7 +4,7 @@ import fg from 'fast-glob'
 import { stringifyQuery } from 'ufo'
 import type { PluginOptions } from '../types'
 import { parseImportGlob } from './parse'
-import { assert, isCSSRequest } from './utils'
+import { assert, getCommonBase, isCSSRequest } from './utils'
 
 const importPrefix = '__vite_glob_next_'
 
@@ -40,14 +40,15 @@ export async function transform(
 
   const staticImports = (await Promise.all(
     matches.map(async({ globsResolved, isRelative, options, index, start, end }) => {
+      const cwd = getCommonBase(globsResolved) ?? root
       const files = (await fg(globsResolved, {
-        cwd: root,
+        cwd,
         absolute: true,
         dot: !!options.exhaustive,
         ignore: options.exhaustive
           ? []
           // When using `isAbsolute: true`, we need to prepend `cwd` to ignore patterns
-          : [join(root, '**/node_modules/**')],
+          : [join(cwd, '**/node_modules/**')],
       }))
         .filter(file => file !== id)
         .sort()

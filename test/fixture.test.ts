@@ -80,6 +80,16 @@ describe('fixture', async() => {
         \\"/takeover.d.ts\\": () => import(\\"../../takeover.d.ts?url?url&lang.ts\\").then(m => m[\\"default\\"]),
         \\"/types.ts\\": () => import(\\"../../types.ts?url?url&lang.ts\\").then(m => m[\\"default\\"])
         }
+        
+        export const cleverCwd1 = {
+        \\"./node_modules/framework/pages/hello.page.js\\": () => import(\\"./node_modules/framework/pages/hello.page.js\\")
+        }
+        
+        export const cleverCwd2 = {
+        \\"../../playground/src/main.ts\\": () => import(\\"../../playground/src/main.ts\\"),
+        \\"./modules/a.ts\\": () => import(\\"./modules/a.ts\\"),
+        \\"./modules/b.ts\\": () => import(\\"./modules/b.ts\\")
+        }
         "
       `)
   })

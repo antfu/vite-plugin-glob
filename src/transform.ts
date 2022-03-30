@@ -56,8 +56,7 @@ export async function transform(
       if (query && !query.startsWith('?'))
         query = `?${query}`
 
-      const filePathsRelativeToRoot
-        = options.filePathsRelativeToRoot ?? globsResolved.some(g => g.globOriginal.startsWith('/'))
+      const filePathsRelativeToRoot = globsResolved.some(g => g.globOriginal.startsWith('/'))
       const resolvePaths = (file: string) => {
         assert(file.startsWith('/'))
 

@@ -37,6 +37,12 @@ Thus I propose to experiment with the `import.meta.glob` as an external plugin s
 - An unified API for different options
 - (Optional) Takeover Vite's `import.meta.glob`
 
+## Experiments
+
+The following features are in experiments, feedbacks are greatly welcome!
+
+- [Restore file extension when query is specified](https://github.com/antfu/vite-plugin-glob/pull/10)
+
 ## Install
 
 ```bash
@@ -174,10 +180,12 @@ const modules = {
 const setups = import.meta.importGlob('./dir/*.js', { query: { foo: 'bar', bar: true } })
 
 /* {
-  './dir/foo.js': () => import('./dir/foo.js?foo=bar&bar=true').then(m => m.setup),
-  './dir/bar.js': () => import('./dir/bar.js?foo=bar&bar=true').then(m => m.setup),
+  './dir/foo.js': () => import('./dir/foo.js?foo=bar&bar=true&lang.js').then(m => m.setup),
+  './dir/bar.js': () => import('./dir/bar.js?foo=bar&bar=true&lang.js').then(m => m.setup),
 } */
 ```
+
+> **Experimental**: `lang.(ext)` will be added automatically to preseve the file extension for following plugins to process. [Discussions](https://github.com/antfu/vite-plugin-glob/pull/10).
 
 ## TypeScript
 

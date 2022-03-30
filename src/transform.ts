@@ -8,7 +8,7 @@ import { assert, isCSSRequest } from './utils'
 
 const importPrefix = '__vite_glob_next_'
 
-const { dirname, relative } = posix
+const { dirname, relative, join } = posix
 
 export async function transform(
   code: string,
@@ -44,7 +44,10 @@ export async function transform(
         cwd: root,
         absolute: true,
         dot: !!options.exhaustive,
-        ignore: options.exhaustive ? [] : ['**/node_modules/**'],
+        ignore: options.exhaustive
+          ? []
+          // When using `isAbsolute: true`, we need to prepend `cwd` to ignore patterns
+          : [join(root, '**/node_modules/**')],
       }))
         .filter(file => file !== id)
         .sort()

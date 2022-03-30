@@ -9,7 +9,6 @@ const knownOptions = {
   as: 'string',
   eager: 'boolean',
   export: 'string',
-  queryRestoreFileExtension: 'boolean',
 } as const
 
 const forceDefaultAs = ['raw', 'url']

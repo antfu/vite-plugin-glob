@@ -62,31 +62,23 @@ describe('fixture', async() => {
         }
         
         export const customQueryString = {
-        \\"./sibling.ts\\": () => import(\\"./sibling.ts?custom\\")
+        \\"./sibling.ts\\": () => import(\\"./sibling.ts?custom&lang.ts\\")
         }
         
         export const customQueryObject = {
-        \\"./sibling.ts\\": () => import(\\"./sibling.ts?foo=bar&raw=true\\")
+        \\"./sibling.ts\\": () => import(\\"./sibling.ts?foo=bar&raw=true&lang.ts\\")
         }
         
         export const parent = {
-        \\"../../playground/src/main.ts\\": () => import(\\"../../playground/src/main.ts?url\\").then(m => m[\\"default\\"])
+        \\"../../playground/src/main.ts\\": () => import(\\"../../playground/src/main.ts?url&lang.ts\\").then(m => m[\\"default\\"])
         }
         
         export const rootMixedRelative = {
-        \\"../../build.config.ts\\": () => import(\\"../../build.config.ts?url\\").then(m => m[\\"default\\"]),
-        \\"../../client.d.ts\\": () => import(\\"../../client.d.ts?url\\").then(m => m[\\"default\\"]),
-        \\"../../playground/package.json\\": () => import(\\"../../playground/package.json?url\\").then(m => m[\\"default\\"]),
-        \\"../../takeover.d.ts\\": () => import(\\"../../takeover.d.ts?url\\").then(m => m[\\"default\\"]),
-        \\"../../types.ts\\": () => import(\\"../../types.ts?url\\").then(m => m[\\"default\\"])
-        }
-        
-        export const restoreFileExtension1 = {
-        \\"./sibling.ts\\": () => import(\\"./sibling.ts?foo=bar&lang.ts\\")
-        }
-        
-        export const restoreFileExtension2 = {
-        \\"./sibling.ts\\": () => import(\\"./sibling.ts?lang.ts\\")
+        \\"../../build.config.ts\\": () => import(\\"../../build.config.ts?url&lang.ts\\").then(m => m[\\"default\\"]),
+        \\"../../client.d.ts\\": () => import(\\"../../client.d.ts?url&lang.ts\\").then(m => m[\\"default\\"]),
+        \\"../../playground/package.json\\": () => import(\\"../../playground/package.json?url&lang.json\\").then(m => m[\\"default\\"]),
+        \\"../../takeover.d.ts\\": () => import(\\"../../takeover.d.ts?url&lang.ts\\").then(m => m[\\"default\\"]),
+        \\"../../types.ts\\": () => import(\\"../../types.ts?url&lang.ts\\").then(m => m[\\"default\\"])
         }
         "
       `)

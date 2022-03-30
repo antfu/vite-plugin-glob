@@ -17,10 +17,6 @@ export interface GlobOptions<Eager extends boolean, AsType extends string> {
    * Custom queries
    */
   query?: string | Record<string, string | number | boolean>
-  /**
-   * Append `&lang.${fileExtension}` to import paths, e.g. `import('./foo.vue?transform&lang.vue')`.
-   */
-  queryRestoreFileExtension?: boolean
 }
 
 export type GeneralGlobOptions = GlobOptions<boolean, string>

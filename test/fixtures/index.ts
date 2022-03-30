@@ -37,14 +37,3 @@ export const rootMixedRelative = import.meta.glob([
   '/*.ts',
   '../../playground/*.json',
 ], { as: 'url' })
-
-export const restoreFileExtension1 = import.meta.glob('./*.ts', {
-  query: {
-    foo: 'bar',
-  },
-  queryRestoreFileExtension: true,
-})
-
-export const restoreFileExtension2 = import.meta.glob('./*.ts', {
-  queryRestoreFileExtension: true,
-})

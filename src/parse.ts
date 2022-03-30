@@ -9,7 +9,7 @@ const knownOptions = {
   as: 'string',
   eager: 'boolean',
   export: 'string',
-  noIgnore: 'boolean',
+  exhaustive: 'boolean',
 } as const
 
 const forceDefaultAs = ['raw', 'url']

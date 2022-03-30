@@ -22,7 +22,7 @@ export interface GlobOptions<Eager extends boolean, AsType extends string> {
    *
    * @default false
    */
-  noIgnore?: boolean
+  exhaustive?: boolean
 }
 
 export type GeneralGlobOptions = GlobOptions<boolean, string>

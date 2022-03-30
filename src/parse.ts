@@ -1,4 +1,4 @@
-import type { ArrayExpression, Literal, Node, SequenceExpression } from 'estree'
+import type { ArrayExpression, CallExpression, Literal, Node } from 'estree'
 import { parseExpressionAt } from 'acorn'
 import type { GeneralGlobOptions, ParsedImportGlob } from '../types'
 import { toAbsoluteGlob } from './glob'
@@ -32,12 +32,12 @@ export async function parseImportGlob(
       return e
     }
 
-    let ast: SequenceExpression | Literal | ArrayExpression = undefined!
+    let ast: CallExpression
 
     try {
       ast = parseExpressionAt(
         code,
-        start + match[0].length - 1,
+        start,
         {
           ecmaVersion: 'latest',
           sourceType: 'module',
@@ -49,28 +49,17 @@ export async function parseImportGlob(
       const _e = e as any
       if (_e.message && _e.message.startsWith('Unterminated string constant'))
         return undefined!
-      if (_e.pos != null && code[_e.pos] === ')')
-        throw err('Expected 1-2 arguments, but got 0')
       throw _e
     }
 
-    let arg1: ArrayExpression | Literal
-    let arg2: Node | undefined
+    if (ast.type !== 'CallExpression')
+      throw err(`Expect CallExpression, got ${ast.type}`)
 
-    if (ast.type === 'SequenceExpression') {
-      if (ast.expressions.length < 1 || ast.expressions.length > 2)
-        throw err(`Expected 1-2 arguments, but got ${ast.expressions.length}`)
+    if (ast.arguments.length < 1 || ast.arguments.length > 2)
+      throw err(`Expected 1-2 arguments, but got ${ast.arguments.length}`)
 
-      arg1 = ast.expressions[0] as any
-      arg2 = ast.expressions[1]
-    }
-    else if (ast.type === 'Literal' || ast.type === 'ArrayExpression') {
-      arg1 = ast
-      arg2 = undefined
-    }
-    else {
-      throw err('Could only use literals')
-    }
+    const arg1 = ast.arguments[0] as ArrayExpression | Literal
+    const arg2 = ast.arguments[1] as Node | undefined
 
     const globs: string[] = []
     if (arg1.type === 'ArrayExpression') {
@@ -158,7 +147,7 @@ export async function parseImportGlob(
     if (options.as)
       options.query = options.as
 
-    const end = ast.range![1] + 1
+    const end = ast.range![1]
 
     const globsResolved = await Promise.all(globs.map(glob => toAbsoluteGlob(glob, root, dir, resolveId)))
     const isRelative = globs.every(i => '.!'.includes(i[0]))

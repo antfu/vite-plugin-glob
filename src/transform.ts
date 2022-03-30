@@ -41,9 +41,9 @@ export async function transform(
   const staticImports = (await Promise.all(
     matches.map(async({ globsResolved, isRelative, options, index, start, end }) => {
       const files = (await fg(globsResolved, {
-        dot: !!options.exhaustive,
-        absolute: true,
         cwd: root,
+        absolute: true,
+        dot: !!options.exhaustive,
         ignore: options.exhaustive ? [] : ['**/node_modules/**'],
       }))
         .filter(file => file !== id)

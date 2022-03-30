@@ -14,10 +14,11 @@ export async function transform(
   code: string,
   id: string,
   root: string,
+  resolveId: (id: string) => Promise<string> | string,
   options?: PluginOptions,
 ) {
   const dir = dirname(id)
-  let matches = parseImportGlob(code, dir, root)
+  let matches = await parseImportGlob(code, dir, root, resolveId)
 
   if (options?.takeover) {
     matches.forEach((i) => {
@@ -47,7 +48,6 @@ export async function transform(
         dot: !!options.exhaustive,
         ignore: options.exhaustive
           ? []
-          // When using `isAbsolute: true`, we need to prepend `cwd` to ignore patterns
           : [join(cwd, '**/node_modules/**')],
       }))
         .filter(file => file !== id)

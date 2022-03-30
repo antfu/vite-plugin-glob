@@ -1,7 +1,7 @@
 import './style.css'
 import * as fixtures from '../../test/fixtures'
 
-const app = document.querySelector<HTMLPreElement>('#app')!
+const app = document.getElementById('app')!
 
 const settled = Object.fromEntries(
   await Promise.all(Object.entries(fixtures)

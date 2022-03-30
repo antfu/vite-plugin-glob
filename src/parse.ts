@@ -14,14 +14,15 @@ const knownOptions = {
 
 const forceDefaultAs = ['raw', 'url']
 
-export function parseImportGlob(
+export async function parseImportGlob(
   code: string,
   dir: string,
   root: string,
-): ParsedImportGlob[] {
+  resolveId: (id: string) => string | Promise<string>,
+): Promise<ParsedImportGlob[]> {
   const matchs = Array.from(code.matchAll(importGlobRE))
 
-  return matchs.map((match, index) => {
+  const tasks = matchs.map(async(match, index) => {
     const type = match[1]
     const start = match.index!
 
@@ -93,8 +94,8 @@ export function parseImportGlob(
       throw err('Could only use literals')
     }
 
-    if (!globs.every(i => i.match(/^[.\/!]/)))
-      throw err('pattern must start with "." or "/" (relative to project root) or alias path')
+    // if (!globs.every(i => i.match(/^[.\/!]/)))
+    //   throw err('pattern must start with "." or "/" (relative to project root) or alias path')
 
     // arg2
     const options: GeneralGlobOptions = {}
@@ -159,7 +160,7 @@ export function parseImportGlob(
 
     const end = ast.range![1] + 1
 
-    const globsResolved = globs.map(glob => toAbsoluteGlob(glob, root, dir))
+    const globsResolved = await Promise.all(globs.map(glob => toAbsoluteGlob(glob, root, dir, resolveId)))
     const isRelative = globs.every(i => '.!'.includes(i[0]))
 
     return {
@@ -174,5 +175,7 @@ export function parseImportGlob(
       end,
     }
   })
+
+  return (await Promise.all(tasks))
     .filter(Boolean)
 }

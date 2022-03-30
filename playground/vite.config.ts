@@ -1,7 +1,13 @@
+import { resolve } from 'path'
 import { defineConfig } from 'vite'
-import GlobPlugin from '../src/index'
+import GlobPlugin from '../src'
 
 export default defineConfig({
+  resolve: {
+    alias: {
+      '~/': `${resolve(__dirname, 'src')}/`,
+    },
+  },
   plugins: [
     GlobPlugin({
       takeover: true,

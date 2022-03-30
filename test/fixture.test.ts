@@ -9,7 +9,7 @@ describe('fixture', async() => {
     const code = await fs.readFile(id, 'utf-8')
     const root = process.cwd()
 
-    expect((await transform(code, id, root, { takeover: true }))?.s.toString())
+    expect((await transform(code, id, root, id => id, { takeover: true }))?.s.toString())
       .toMatchInlineSnapshot(`
         "import * as __vite_glob_next_1_0 from \\"./modules/a.ts\\"
         import * as __vite_glob_next_1_1 from \\"./modules/b.ts\\"
@@ -86,7 +86,8 @@ describe('fixture', async() => {
         }
         
         export const cleverCwd2 = {
-        \\"../../playground/src/main.ts\\": () => import(\\"../../playground/src/main.ts\\"),
+        \\"../../playground/src/fixtures/a.ts\\": () => import(\\"../../playground/src/fixtures/a.ts\\"),
+        \\"../../playground/src/fixtures/b.ts\\": () => import(\\"../../playground/src/fixtures/b.ts\\"),
         \\"./modules/a.ts\\": () => import(\\"./modules/a.ts\\"),
         \\"./modules/b.ts\\": () => import(\\"./modules/b.ts\\")
         }

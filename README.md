@@ -35,6 +35,7 @@ Thus I propose to experiment with the `import.meta.glob` as an external plugin s
 - Ability to provide custom queries
 - Ability to only import default / named export
 - An unified API for different options
+- Vite alias
 - (Optional) Takeover Vite's `import.meta.glob`
 
 ## Experiments

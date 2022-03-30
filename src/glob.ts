@@ -1,6 +1,11 @@
 import { posix } from 'path'
 
-export function toAbsoluteGlob(glob: string, root: string, dirname: string): string {
+export async function toAbsoluteGlob(
+  glob: string,
+  root: string,
+  dirname: string,
+  resolveId: (id: string) => string | Promise<string>,
+): Promise<string> {
   let pre = ''
   if (glob.startsWith('!')) {
     pre = '!'
@@ -15,6 +20,10 @@ export function toAbsoluteGlob(glob: string, root: string, dirname: string): str
     return pre + posix.join(dirname, glob)
   if (glob.startsWith('**'))
     return pre + glob
+
+  const resolved = await resolveId(glob)
+  if (resolved.startsWith('/'))
+    return pre + resolved
 
   throw new Error(`Invalid glob: ${glob}. It must starts with '/' or './'`)
 }

@@ -42,6 +42,6 @@ export const cleverCwd1 = import.meta.glob('./node_modules/framework/**/*.page.j
 
 export const cleverCwd2 = import.meta.glob([
   './modules/*.ts',
-  '../../playground/src/*.ts',
+  '../../playground/src/fixtures/*.ts',
   '!**/index.ts',
 ])

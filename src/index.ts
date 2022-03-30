@@ -9,7 +9,7 @@ export default function(options: PluginOptions = {}): Plugin {
   const map = new Map<string, string[][]>()
 
   function updateMap(id: string, info: ParsedImportGlob[]) {
-    const allGlobs = info.map(i => i.globsResolved.map(g => g.globResolved))
+    const allGlobs = info.map(i => i.globsResolved)
     map.set(id, allGlobs)
     // add those allGlobs to the watcher
     server?.watcher.add(allGlobs.flatMap(i => i.filter(i => i[0] !== '!')))

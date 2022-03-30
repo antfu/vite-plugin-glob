@@ -39,8 +39,8 @@ export async function transform(
   const s = new MagicString(code)
 
   const staticImports = (await Promise.all(
-    matches.map(async({ globsResolved, options, index, start, end }) => {
-      const files = (await fg(globsResolved.map(g => g.globResolved), { dot: true, absolute: true, cwd: root }))
+    matches.map(async({ globsResolved, isRelative, options, index, start, end }) => {
+      const files = (await fg(globsResolved, { dot: true, absolute: true, cwd: root }))
         .filter(file => file !== id)
         .sort()
 
@@ -56,7 +56,6 @@ export async function transform(
       if (query && !query.startsWith('?'))
         query = `?${query}`
 
-      const filePathsRelativeToRoot = globsResolved.some(g => g.globOriginal.startsWith('/'))
       const resolvePaths = (file: string) => {
         assert(file.startsWith('/'))
 
@@ -66,7 +65,7 @@ export async function transform(
           importPath = `./${importPath}`
 
         let filePath: string
-        if (!filePathsRelativeToRoot) {
+        if (isRelative) {
           filePath = importPath
         }
         else {

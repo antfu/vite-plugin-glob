@@ -93,7 +93,6 @@ export async function transform(
         let importPath = paths.importPath
         let importQuery = query
 
-        importPath = `${importPath}${query}`
         if (isCSSRequest(file))
           importQuery = importQuery ? `${importQuery}&used` : '?used'
 

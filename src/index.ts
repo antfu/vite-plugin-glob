@@ -43,10 +43,7 @@ export default function(options: PluginOptions = {}): Plugin {
     },
     configureServer(_server) {
       server = _server
-
-      // file unlink won't be handled by handleHotUpdate,
-      // so we do the update manually
-      server.watcher.on('unlink', (file: string) => {
+      const handleFileAddUnlink = (file: string) => {
         const modules = getAffectedModules(file)
         _server.ws.send({
           type: 'update',
@@ -60,12 +57,9 @@ export default function(options: PluginOptions = {}): Plugin {
             }
           }),
         })
-      })
-    },
-    handleHotUpdate({ file }) {
-      const modules = getAffectedModules(file)
-      if (modules.length)
-        return modules
+      }
+      server.watcher.on('unlink', handleFileAddUnlink)
+      server.watcher.on('add', handleFileAddUnlink)
     },
     async transform(code, id) {
       const result = await transform(

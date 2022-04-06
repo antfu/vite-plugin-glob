@@ -19,7 +19,7 @@ export async function transform(
 ) {
   id = toPosixPath(id)
   root = toPosixPath(root)
-  const dir = dirname(id)
+  const dir = !id.includes('/') ? null : dirname(id)
   let matches = await parseImportGlob(code, dir, root, resolveId)
 
   if (options?.takeover) {
@@ -68,6 +68,13 @@ export async function transform(
         query = `?${query}`
 
       const resolvePaths = (file: string) => {
+        if (!dir) {
+          let filePath = relative(root, file)
+          if (!filePath.startsWith('.'))
+            filePath = `/${filePath}`
+          return { filePath, importPath: filePath }
+        }
+
         let importPath = relative(dir, file)
         if (!importPath.startsWith('.'))
           importPath = `./${importPath}`

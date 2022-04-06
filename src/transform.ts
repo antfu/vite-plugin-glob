@@ -17,6 +17,9 @@ export async function transform(
   resolveId: (id: string) => Promise<string> | string,
   options?: PluginOptions,
 ) {
+  if (!code.includes('import.meta.importGlob') && (!options?.takeover || !code.includes('import.meta.glob')))
+    return
+
   id = toPosixPath(id)
   root = toPosixPath(root)
   const dir = dirname(id)

@@ -38,3 +38,8 @@ export function getCommonBase(globsResolved: string[]): null | string {
 export function toPosixPath(p: string) {
   return p.split('\\').join('/')
 }
+
+export function isVirtualModule(id: string) {
+  // https://vitejs.dev/guide/api-plugin.html#virtual-modules-convention
+  return id.startsWith('virtual:') || id.startsWith('\0') || !id.includes('/')
+}

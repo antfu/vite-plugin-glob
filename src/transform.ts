@@ -69,6 +69,9 @@ export async function transform(
 
       const resolvePaths = (file: string) => {
         if (!dir) {
+          if (isRelative)
+            throw new Error('In virtual modules, all globs must start with \'/\'')
+
           let filePath = relative(root, file)
           if (!filePath.startsWith('.'))
             filePath = `/${filePath}`

@@ -5,12 +5,15 @@ import { transformWithEsbuild } from 'vite'
 import { transform } from '../src/transform'
 
 describe('fixture', async() => {
+  const resolveId = (id: string) => id
+  const options = { takeover: true }
+
   it('transform', async() => {
     const id = resolve(__dirname, './fixtures/index.ts')
     const code = (await transformWithEsbuild(await fs.readFile(id, 'utf-8'), id)).code
     const root = process.cwd()
 
-    expect((await transform(code, id, root, id => id, { takeover: true }))?.s.toString())
+    expect((await transform(code, id, root, resolveId, options))?.s.toString())
       .toMatchInlineSnapshot(`
         "import * as __vite_glob_next_1_0 from \\"./modules/a.ts\\"
         import * as __vite_glob_next_1_1 from \\"./modules/b.ts\\"
@@ -78,5 +81,25 @@ describe('fixture', async() => {
         };
         "
       `)
+  })
+
+  it('virtual modules', async() => {
+    const root = resolve(__dirname, './fixtures')
+    expect((await transform('import.meta.glob(\'/modules/*.ts\')', 'virtual:module', root, resolveId, options))?.s.toString())
+      .toMatchInlineSnapshot(`
+"{
+\\"/modules/a.ts\\": () => import(\\"/modules/a.ts\\"),
+\\"/modules/b.ts\\": () => import(\\"/modules/b.ts\\"),
+\\"/modules/index.ts\\": () => import(\\"/modules/index.ts\\")
+}"`,
+      )
+
+    try {
+      await transform('import.meta.glob(\'./modules/*.ts\')', 'virtual:module', root, resolveId, options)
+      expect('no error').toBe('should throw an error')
+    }
+    catch (err) {
+      expect(err).toMatchInlineSnapshot('[Error: In virtual modules, all globs must start with \'/\']')
+    }
   })
 })

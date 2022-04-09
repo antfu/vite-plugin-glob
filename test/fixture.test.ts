@@ -85,12 +85,21 @@ describe('fixture', async() => {
 
   it('virtual modules', async() => {
     const root = resolve(__dirname, './fixtures')
-    expect((await transform('import.meta.glob(\'/modules/*.ts\')', 'virtual:module', root, resolveId, options))?.s.toString())
+    const code = [
+      'import.meta.glob(\'/modules/*.ts\')',
+      'import.meta.glob([\'/../../playground/src/fixtures/*.ts\'])',
+    ].join('\n')
+    expect((await transform(code, 'virtual:module', root, resolveId, options))?.s.toString())
       .toMatchInlineSnapshot(`
 "{
 \\"/modules/a.ts\\": () => import(\\"/modules/a.ts\\"),
 \\"/modules/b.ts\\": () => import(\\"/modules/b.ts\\"),
 \\"/modules/index.ts\\": () => import(\\"/modules/index.ts\\")
+}
+{
+\\"/../../playground/src/fixtures/a.ts\\": () => import(\\"/../../playground/src/fixtures/a.ts\\"),
+\\"/../../playground/src/fixtures/b.ts\\": () => import(\\"/../../playground/src/fixtures/b.ts\\"),
+\\"/../../playground/src/fixtures/index.ts\\": () => import(\\"/../../playground/src/fixtures/index.ts\\")
 }"`,
       )
 

@@ -16,7 +16,7 @@ const forceDefaultAs = ['raw', 'url']
 
 export async function parseImportGlob(
   code: string,
-  dir: string,
+  dir: string | null,
   root: string,
   resolveId: (id: string) => string | Promise<string>,
 ): Promise<ParsedImportGlob[]> {
@@ -149,7 +149,7 @@ export async function parseImportGlob(
 
     const end = ast.range![1]
 
-    const globsResolved = await Promise.all(globs.map(glob => toAbsoluteGlob(glob, root, dir, resolveId)))
+    const globsResolved = await Promise.all(globs.map(glob => toAbsoluteGlob(glob, root, dir ?? root, resolveId)))
     const isRelative = globs.every(i => '.!'.includes(i[0]))
 
     return {

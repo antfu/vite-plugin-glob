@@ -4,7 +4,7 @@ import fg from 'fast-glob'
 import { stringifyQuery } from 'ufo'
 import type { PluginOptions } from '../types'
 import { parseImportGlob } from './parse'
-import { getCommonBase, isCSSRequest, toPosixPath } from './utils'
+import { getCommonBase, isCSSRequest, isVirtualModule, toPosixPath } from './utils'
 
 const importPrefix = '__vite_glob_next_'
 
@@ -19,7 +19,7 @@ export async function transform(
 ) {
   id = toPosixPath(id)
   root = toPosixPath(root)
-  const dir = dirname(id)
+  const dir = isVirtualModule(id) ? null : dirname(id)
   let matches = await parseImportGlob(code, dir, root, resolveId)
 
   if (options?.takeover) {
@@ -68,6 +68,13 @@ export async function transform(
         query = `?${query}`
 
       const resolvePaths = (file: string) => {
+        if (!dir) {
+          if (isRelative)
+            throw new Error('In virtual modules, all globs must start with \'/\'')
+          const filePath = `/${relative(root, file)}`
+          return { filePath, importPath: filePath }
+        }
+
         let importPath = relative(dir, file)
         if (!importPath.startsWith('.'))
           importPath = `./${importPath}`

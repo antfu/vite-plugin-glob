@@ -163,7 +163,7 @@ const setups = {
 Set `export` to `default` to import the default export.
 
 ```ts
-const modules = import.meta.importGlob('./dir/*.js', { export: 'deafult', eager: true })
+const modules = import.meta.importGlob('./dir/*.js', { export: 'default', eager: true })
 
 /*
 import __glob__0_0 from './dir/foo.js'

@@ -1,11 +1,12 @@
 import { resolve } from 'path'
+import { fileURLToPath } from 'url'
 import { defineConfig } from 'vite'
-import GlobPlugin from '../src'
+import GlobPlugin from 'vite-plugin-glob'
 
 export default defineConfig({
   resolve: {
     alias: {
-      '~/': `${resolve(__dirname, 'src')}/`,
+      '~/': `${resolve(fileURLToPath(import.meta.url), '../src')}/`,
     },
   },
   plugins: [

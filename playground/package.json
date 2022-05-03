@@ -2,13 +2,15 @@
   "name": "playground",
   "version": "0.0.0",
   "private": true,
+  "type": "module",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview"
   },
   "devDependencies": {
-    "typescript": "^4.6.3",
-    "vite": "^2.9.1"
+    "typescript": "^4.6.4",
+    "vite": "^2.9.7",
+    "vite-plugin-glob": "workspace:*"
   }
 }

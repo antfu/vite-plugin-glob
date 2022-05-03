@@ -1,5 +1,5 @@
 import path from 'path'
-import { scan } from 'micromatch'
+import mm from 'micromatch'
 
 const cssLangs = '\\.(css|less|sass|scss|styl|stylus|pcss|postcss)($|\\?)'
 const cssLangRE = new RegExp(cssLangs)
@@ -9,7 +9,7 @@ export const isCSSRequest = (request: string): boolean =>
 
 export function getCommonBase(globsResolved: string[]): null | string {
   const bases = globsResolved.filter(g => !g.startsWith('!')).map((glob) => {
-    let { base } = scan(glob)
+    let { base } = mm.scan(glob)
     // `scan('a/foo.js')` returns `base: 'a/foo.js'`
     if (path.posix.basename(base).includes('.'))
       base = path.posix.dirname(base)

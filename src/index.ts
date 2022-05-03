@@ -1,5 +1,5 @@
 import type { ModuleNode, Plugin, ResolvedConfig, ViteDevServer } from 'vite'
-import { isMatch } from 'micromatch'
+import mm from 'micromatch'
 import type { ParsedImportGlob, PluginOptions } from '../types'
 import { transform } from './transform'
 
@@ -18,7 +18,7 @@ export default function(options: PluginOptions = {}): Plugin {
   function getAffectedModules(file: string) {
     const modules: ModuleNode[] = []
     for (const [id, allGlobs] of map) {
-      if (allGlobs.some(glob => isMatch(file, glob)))
+      if (allGlobs.some(glob => mm.isMatch(file, glob)))
         modules.push(...(server?.moduleGraph.getModulesByFile(id) || []))
     }
     return modules

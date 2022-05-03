@@ -5,10 +5,10 @@ const app = document.getElementById('app')!
 
 const settled = Object.fromEntries(
   await Promise.all(Object.entries(fixtures)
-    .map(async([key, value]) => {
+    .map(async ([key, value]) => {
       return [key, Object.fromEntries(
         await Promise.all(Object.entries(value)
-          .map(async([k, v]) => [k, await (typeof v === 'function' ? v() : v)]),
+          .map(async ([k, v]) => [k, await (typeof v === 'function' ? v() : v)]),
         ),
       )]
     }),

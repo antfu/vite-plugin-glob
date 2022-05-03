@@ -42,7 +42,7 @@ export async function transform(
   const s = new MagicString(code)
 
   const staticImports = (await Promise.all(
-    matches.map(async({ globsResolved, isRelative, options, index, start, end }) => {
+    matches.map(async ({ globsResolved, isRelative, options, index, start, end }) => {
       const cwd = getCommonBase(globsResolved) ?? root
       const files = (await fg(globsResolved, {
         cwd,

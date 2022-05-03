@@ -15,8 +15,8 @@ async function runError(input: string) {
   }
 }
 
-describe('parse positives', async() => {
-  it('basic', async() => {
+describe('parse positives', async () => {
+  it('basic', async () => {
     expect(await run(`
     import.meta.importGlob(\'./modules/*.ts\')
     `)).toMatchInlineSnapshot(`
@@ -31,7 +31,7 @@ describe('parse positives', async() => {
     `)
   })
 
-  it('array', async() => {
+  it('array', async () => {
     expect(await run(`
     import.meta.importGlob([\'./modules/*.ts\', './dir/*.{js,ts}\'])
     `)).toMatchInlineSnapshot(`
@@ -47,7 +47,7 @@ describe('parse positives', async() => {
     `)
   })
 
-  it('options with multilines', async() => {
+  it('options with multilines', async () => {
     expect(await run(`
     import.meta.importGlob([
       \'./modules/*.ts\',
@@ -72,7 +72,7 @@ describe('parse positives', async() => {
     `)
   })
 
-  it('options with multilines', async() => {
+  it('options with multilines', async () => {
     expect(await run(`
     const modules = import.meta.glob(
       '/dir/**'
@@ -93,7 +93,7 @@ describe('parse positives', async() => {
     `)
   })
 
-  it('options query', async() => {
+  it('options query', async () => {
     expect(await run(`
     const modules = import.meta.glob(
       '/dir/**',
@@ -122,58 +122,58 @@ describe('parse positives', async() => {
   })
 })
 
-describe('parse negatives', async() => {
-  it('syntax error', async() => {
+describe('parse negatives', async () => {
+  it('syntax error', async () => {
     expect(await runError('import.meta.importGlob('))
       .toMatchInlineSnapshot('[SyntaxError: Unexpected token (1:23)]')
   })
 
-  it('empty', async() => {
+  it('empty', async () => {
     expect(await runError('import.meta.importGlob()'))
       .toMatchInlineSnapshot('[Error: Invalid glob import syntax: Expected 1-2 arguments, but got 0]')
   })
 
-  it('3 args', async() => {
+  it('3 args', async () => {
     expect(await runError('import.meta.importGlob("", {}, {})'))
       .toMatchInlineSnapshot('[Error: Invalid glob import syntax: Expected 1-2 arguments, but got 3]')
   })
 
-  it('in string', async() => {
+  it('in string', async () => {
     expect(await runError('"import.meta.importGlob()"'))
       .toBeUndefined()
   })
 
-  it('variable', async() => {
+  it('variable', async () => {
     expect(await runError('import.meta.importGlob(hey)'))
       .toMatchInlineSnapshot('[Error: Invalid glob import syntax: Could only use literals]')
   })
 
-  it('template', async() => {
+  it('template', async () => {
     // eslint-disable-next-line no-template-curly-in-string
     expect(await runError('import.meta.importGlob(`hi ${hey}`)'))
       .toMatchInlineSnapshot('[Error: Invalid glob import syntax: Could only use literals]')
   })
 
-  it('be string', async() => {
+  it('be string', async () => {
     expect(await runError('import.meta.importGlob(1)'))
       .toMatchInlineSnapshot('[Error: Invalid glob import syntax: Expected glob to be a string, but got "number"]')
   })
 
-  it('be array variable', async() => {
+  it('be array variable', async () => {
     expect(await runError('import.meta.importGlob([hey])'))
       .toMatchInlineSnapshot('[Error: Invalid glob import syntax: Could only use literals]')
     expect(await runError('import.meta.importGlob(["1", hey])'))
       .toMatchInlineSnapshot('[Error: Invalid glob import syntax: Could only use literals]')
   })
 
-  it('options', async() => {
+  it('options', async () => {
     expect(await runError('import.meta.importGlob("hey", hey)'))
       .toMatchInlineSnapshot('[Error: Invalid glob import syntax: Expected the second argument o to be a object literal, but got "Identifier"]')
     expect(await runError('import.meta.importGlob("hey", [])'))
       .toMatchInlineSnapshot('[Error: Invalid glob import syntax: Expected the second argument o to be a object literal, but got "ArrayExpression"]')
   })
 
-  it('options props', async() => {
+  it('options props', async () => {
     expect(await runError('import.meta.importGlob("hey", { hey: 1 })'))
       .toMatchInlineSnapshot('[Error: Invalid glob import syntax: Unknown options hey]')
     expect(await runError('import.meta.importGlob("hey", { export: hey })'))
@@ -182,7 +182,7 @@ describe('parse negatives', async() => {
       .toMatchInlineSnapshot('[Error: Invalid glob import syntax: Expected the type of option "eager" to be "boolean", but got "number"]')
   })
 
-  it('options query', async() => {
+  it('options query', async () => {
     expect(await runError('import.meta.importGlob("./*.js", { as: "raw", query: "hi" })'))
       .toMatchInlineSnapshot('[Error: Invalid glob import syntax: Options "as" and "query" cannot be used together]')
     expect(await runError('import.meta.importGlob("./*.js", { query: 123 })'))

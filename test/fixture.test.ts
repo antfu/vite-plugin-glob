@@ -4,11 +4,11 @@ import { describe, expect, it } from 'vitest'
 import { transformWithEsbuild } from 'vite'
 import { transform } from '../src/transform'
 
-describe('fixture', async() => {
+describe('fixture', async () => {
   const resolveId = (id: string) => id
   const options = { takeover: true }
 
-  it('transform', async() => {
+  it('transform', async () => {
     const id = resolve(__dirname, './fixtures/index.ts')
     const code = (await transformWithEsbuild(await fs.readFile(id, 'utf-8'), id)).code
     const root = process.cwd()
@@ -83,7 +83,7 @@ describe('fixture', async() => {
       `)
   })
 
-  it('virtual modules', async() => {
+  it('virtual modules', async () => {
     const root = resolve(__dirname, './fixtures')
     const code = [
       'import.meta.glob(\'/modules/*.ts\')',

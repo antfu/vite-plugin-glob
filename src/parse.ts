@@ -22,7 +22,7 @@ export async function parseImportGlob(
 ): Promise<ParsedImportGlob[]> {
   const matchs = Array.from(code.matchAll(importGlobRE))
 
-  const tasks = matchs.map(async(match, index) => {
+  const tasks = matchs.map(async (match, index) => {
     const type = match[1]
     const start = match.index!
 

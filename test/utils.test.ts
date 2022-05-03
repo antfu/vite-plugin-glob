@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import { getCommonBase } from '../src/utils'
 
-describe('getCommonBase()', async() => {
+describe('getCommonBase()', async () => {
   it('basic', () => {
     expect(getCommonBase(['/a/b/*.js', '/a/c/*.js'])).toBe('/a')
   })

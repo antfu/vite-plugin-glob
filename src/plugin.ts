@@ -49,6 +49,13 @@ export function importGlobPlugin(options: PluginOptions = {}): Plugin {
     buildStart() {
       map.clear()
     },
+    handleHotUpdate(ctx) {
+      if (!ctx.file)
+        return
+      const affected = getAffectedModules(ctx.file)
+      if (affected.length)
+        return [...ctx.modules, ...affected]
+    },
     configureServer(_server) {
       server = _server
       const handleFileAddUnlink = (file: string) => {
@@ -59,7 +66,6 @@ export function importGlobPlugin(options: PluginOptions = {}): Plugin {
         })
       }
       server.watcher.on('unlink', handleFileAddUnlink)
-      server.watcher.on('add', handleFileAddUnlink)
     },
     async transform(code, id) {
       const result = await transform(

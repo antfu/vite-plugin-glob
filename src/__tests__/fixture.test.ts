@@ -9,7 +9,7 @@ describe('fixture', async () => {
   const options = { takeover: true }
 
   it('transform', async () => {
-    const id = resolve(__dirname, './fixtures/index.ts')
+    const id = resolve(__dirname, './fixture-a/index.ts')
     const code = (await transformWithEsbuild(await fs.readFile(id, 'utf-8'), id)).code
     const root = process.cwd()
 
@@ -66,9 +66,9 @@ describe('fixture', async () => {
         export const rootMixedRelative = {
         \\"/build.config.ts\\": () => import(\\"../../../build.config.ts?url&lang.ts\\").then(m => m[\\"default\\"]),
         \\"/client.d.ts\\": () => import(\\"../../../client.d.ts?url&lang.ts\\").then(m => m[\\"default\\"]),
-        \\"/src/__tests__/fixture.test.ts\\": () => import(\\"../fixture.test.ts?url&lang.ts\\").then(m => m[\\"default\\"]),
-        \\"/src/__tests__/parse.test.ts\\": () => import(\\"../parse.test.ts?url&lang.ts\\").then(m => m[\\"default\\"]),
-        \\"/src/__tests__/utils.test.ts\\": () => import(\\"../utils.test.ts?url&lang.ts\\").then(m => m[\\"default\\"]),
+        \\"/src/__tests__/fixture-b/a.ts\\": () => import(\\"../fixture-b/a.ts?url&lang.ts\\").then(m => m[\\"default\\"]),
+        \\"/src/__tests__/fixture-b/b.ts\\": () => import(\\"../fixture-b/b.ts?url&lang.ts\\").then(m => m[\\"default\\"]),
+        \\"/src/__tests__/fixture-b/index.ts\\": () => import(\\"../fixture-b/index.ts?url&lang.ts\\").then(m => m[\\"default\\"]),
         \\"/takeover.d.ts\\": () => import(\\"../../../takeover.d.ts?url&lang.ts\\").then(m => m[\\"default\\"]),
         \\"/types.ts\\": () => import(\\"../../../types.ts?url&lang.ts\\").then(m => m[\\"default\\"])
         };
@@ -76,21 +76,20 @@ describe('fixture', async () => {
         \\"./node_modules/framework/pages/hello.page.js\\": () => import(\\"./node_modules/framework/pages/hello.page.js\\")
         };
         export const cleverCwd2 = {
-        \\"../fixture.test.ts\\": () => import(\\"../fixture.test.ts\\"),
         \\"./modules/a.ts\\": () => import(\\"./modules/a.ts\\"),
         \\"./modules/b.ts\\": () => import(\\"./modules/b.ts\\"),
-        \\"../parse.test.ts\\": () => import(\\"../parse.test.ts\\"),
-        \\"../utils.test.ts\\": () => import(\\"../utils.test.ts\\")
+        \\"../fixture-b/a.ts\\": () => import(\\"../fixture-b/a.ts\\"),
+        \\"../fixture-b/b.ts\\": () => import(\\"../fixture-b/b.ts\\")
         };
         "
       `)
   })
 
   it('virtual modules', async () => {
-    const root = resolve(__dirname, './fixtures')
+    const root = resolve(__dirname, './fixture-a')
     const code = [
       'import.meta.glob(\'/modules/*.ts\')',
-      'import.meta.glob([\'/../*.ts\'])',
+      'import.meta.glob([\'/../fixture-b/*.ts\'])',
     ].join('\n')
     expect((await transform(code, 'virtual:module', root, resolveId, options))?.s.toString())
       .toMatchInlineSnapshot(`
@@ -100,9 +99,9 @@ describe('fixture', async () => {
         \\"/modules/index.ts\\": () => import(\\"/modules/index.ts\\")
         }
         {
-        \\"/../fixture.test.ts\\": () => import(\\"/../fixture.test.ts\\"),
-        \\"/../parse.test.ts\\": () => import(\\"/../parse.test.ts\\"),
-        \\"/../utils.test.ts\\": () => import(\\"/../utils.test.ts\\")
+        \\"/../fixture-b/a.ts\\": () => import(\\"/../fixture-b/a.ts\\"),
+        \\"/../fixture-b/b.ts\\": () => import(\\"/../fixture-b/b.ts\\"),
+        \\"/../fixture-b/index.ts\\": () => import(\\"/../fixture-b/index.ts\\")
         }"
       `,
       )

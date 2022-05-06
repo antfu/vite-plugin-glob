@@ -1,5 +1,5 @@
 import './style.css'
-import * as fixtures from '../../test/fixtures'
+import * as fixtures from '../../src/__tests__/fixture-a'
 
 const app = document.getElementById('app')!
 

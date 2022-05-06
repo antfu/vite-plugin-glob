@@ -53,17 +53,9 @@ export function importGlobPlugin(options: PluginOptions = {}): Plugin {
       server = _server
       const handleFileAddUnlink = (file: string) => {
         const modules = getAffectedModules(file)
-        _server.ws.send({
-          type: 'update',
-          updates: modules.map((mod) => {
-            _server.moduleGraph.invalidateModule(mod)
-            return {
-              acceptedPath: mod.id!,
-              path: mod.id!,
-              timestamp: Date.now(),
-              type: 'js-update',
-            }
-          }),
+        modules.forEach((i) => {
+          if (i?.file)
+            _server.moduleGraph.onFileChange(i.file)
         })
       }
       server.watcher.on('unlink', handleFileAddUnlink)

@@ -261,14 +261,14 @@ export async function transform(
   id: string,
   root: string,
   resolveId: (id: string) => Promise<string> | string,
-  options?: PluginOptions,
+  { restoreQueryExtension = false, takeover = false }: PluginOptions = {},
 ) {
   id = toPosixPath(id)
   root = toPosixPath(root)
   const dir = isVirtualModule(id) ? null : dirname(id)
   let matches = await parseImportGlob(code, dir, root, resolveId)
 
-  if (options?.takeover) {
+  if (takeover) {
     matches.forEach((i) => {
       if (i.type === 'globEager')
         i.options.eager = true
@@ -349,7 +349,7 @@ export async function transform(
 
         if (importQuery && importQuery !== '?raw') {
           const fileExtension = basename(file).split('.').slice(-1)[0]
-          if (fileExtension)
+          if (fileExtension && restoreQueryExtension)
             importQuery = `${importQuery}&lang.${fileExtension}`
         }
 

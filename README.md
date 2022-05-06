@@ -37,12 +37,7 @@ Thus I propose to experiment with the `import.meta.glob` as an external plugin s
 - An unified API for different options
 - Vite alias
 - (Optional) Takeover Vite's `import.meta.glob`
-
-## Experiments
-
-The following features are in experiments, feedbacks are greatly welcome!
-
-- [Restore file extension when query is specified](https://github.com/antfu/vite-plugin-glob/pull/10)
+- [Experiments](#experiments)
 
 ## Install
 
@@ -186,7 +181,17 @@ const setups = import.meta.importGlob('./dir/*.js', { query: { foo: 'bar', bar: 
 } */
 ```
 
-> **Experimental**: `lang.(ext)` will be added automatically to preseve the file extension for following plugins to process. [Discussions](https://github.com/antfu/vite-plugin-glob/pull/10).
+## Experiments
+
+The following features are in experiments, feedbacks are greatly welcome!
+
+### Restore file extension when query is specified
+
+Append fake `&lang.(ext)` when queries are specified, to preseve the file extension for following plugins to process.
+
+Learn more at [Discussions](https://github.com/antfu/vite-plugin-glob/pull/10)
+
+This is disabled by default since v0.3.0. To enable it, pass `restoreQueryExtension: true` to plugin options.
 
 ## TypeScript
 

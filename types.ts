@@ -52,6 +52,14 @@ export interface PluginOptions {
    * @default false
    */
   takeover?: boolean
+
+  /**
+   * Append fake `&lang.(ext)` when queries are specified, to preseve the file extension for following plugins to process.
+   *
+   * @experimental
+   * @default false
+   */
+  restoreQueryExtension?: boolean
 }
 
 type isTrue<T> = T extends true ? true : false

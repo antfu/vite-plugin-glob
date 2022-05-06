@@ -2,7 +2,7 @@ import { resolve } from 'path'
 import { promises as fs } from 'fs'
 import { describe, expect, it } from 'vitest'
 import { transformWithEsbuild } from 'vite'
-import { transform } from '../src/transform'
+import { transform } from '../plugin'
 
 describe('fixture', async () => {
   const resolveId = (id: string) => id
@@ -61,23 +61,26 @@ describe('fixture', async () => {
         \\"./sibling.ts\\": () => import(\\"./sibling.ts?foo=bar&raw=true&lang.ts\\")
         };
         export const parent = {
-        \\"../../playground/src/main.ts\\": () => import(\\"../../playground/src/main.ts?url&lang.ts\\").then(m => m[\\"default\\"])
+        
         };
         export const rootMixedRelative = {
-        \\"/build.config.ts\\": () => import(\\"../../build.config.ts?url&lang.ts\\").then(m => m[\\"default\\"]),
-        \\"/client.d.ts\\": () => import(\\"../../client.d.ts?url&lang.ts\\").then(m => m[\\"default\\"]),
-        \\"/playground/package.json\\": () => import(\\"../../playground/package.json?url&lang.json\\").then(m => m[\\"default\\"]),
-        \\"/takeover.d.ts\\": () => import(\\"../../takeover.d.ts?url&lang.ts\\").then(m => m[\\"default\\"]),
-        \\"/types.ts\\": () => import(\\"../../types.ts?url&lang.ts\\").then(m => m[\\"default\\"])
+        \\"/build.config.ts\\": () => import(\\"../../../build.config.ts?url&lang.ts\\").then(m => m[\\"default\\"]),
+        \\"/client.d.ts\\": () => import(\\"../../../client.d.ts?url&lang.ts\\").then(m => m[\\"default\\"]),
+        \\"/src/__tests__/fixture.test.ts\\": () => import(\\"../fixture.test.ts?url&lang.ts\\").then(m => m[\\"default\\"]),
+        \\"/src/__tests__/parse.test.ts\\": () => import(\\"../parse.test.ts?url&lang.ts\\").then(m => m[\\"default\\"]),
+        \\"/src/__tests__/utils.test.ts\\": () => import(\\"../utils.test.ts?url&lang.ts\\").then(m => m[\\"default\\"]),
+        \\"/takeover.d.ts\\": () => import(\\"../../../takeover.d.ts?url&lang.ts\\").then(m => m[\\"default\\"]),
+        \\"/types.ts\\": () => import(\\"../../../types.ts?url&lang.ts\\").then(m => m[\\"default\\"])
         };
         export const cleverCwd1 = {
         \\"./node_modules/framework/pages/hello.page.js\\": () => import(\\"./node_modules/framework/pages/hello.page.js\\")
         };
         export const cleverCwd2 = {
-        \\"../../playground/src/fixtures/a.ts\\": () => import(\\"../../playground/src/fixtures/a.ts\\"),
-        \\"../../playground/src/fixtures/b.ts\\": () => import(\\"../../playground/src/fixtures/b.ts\\"),
+        \\"../fixture.test.ts\\": () => import(\\"../fixture.test.ts\\"),
         \\"./modules/a.ts\\": () => import(\\"./modules/a.ts\\"),
-        \\"./modules/b.ts\\": () => import(\\"./modules/b.ts\\")
+        \\"./modules/b.ts\\": () => import(\\"./modules/b.ts\\"),
+        \\"../parse.test.ts\\": () => import(\\"../parse.test.ts\\"),
+        \\"../utils.test.ts\\": () => import(\\"../utils.test.ts\\")
         };
         "
       `)
@@ -87,20 +90,21 @@ describe('fixture', async () => {
     const root = resolve(__dirname, './fixtures')
     const code = [
       'import.meta.glob(\'/modules/*.ts\')',
-      'import.meta.glob([\'/../../playground/src/fixtures/*.ts\'])',
+      'import.meta.glob([\'/../*.ts\'])',
     ].join('\n')
     expect((await transform(code, 'virtual:module', root, resolveId, options))?.s.toString())
       .toMatchInlineSnapshot(`
-"{
-\\"/modules/a.ts\\": () => import(\\"/modules/a.ts\\"),
-\\"/modules/b.ts\\": () => import(\\"/modules/b.ts\\"),
-\\"/modules/index.ts\\": () => import(\\"/modules/index.ts\\")
-}
-{
-\\"/../../playground/src/fixtures/a.ts\\": () => import(\\"/../../playground/src/fixtures/a.ts\\"),
-\\"/../../playground/src/fixtures/b.ts\\": () => import(\\"/../../playground/src/fixtures/b.ts\\"),
-\\"/../../playground/src/fixtures/index.ts\\": () => import(\\"/../../playground/src/fixtures/index.ts\\")
-}"`,
+        "{
+        \\"/modules/a.ts\\": () => import(\\"/modules/a.ts\\"),
+        \\"/modules/b.ts\\": () => import(\\"/modules/b.ts\\"),
+        \\"/modules/index.ts\\": () => import(\\"/modules/index.ts\\")
+        }
+        {
+        \\"/../fixture.test.ts\\": () => import(\\"/../fixture.test.ts\\"),
+        \\"/../parse.test.ts\\": () => import(\\"/../parse.test.ts\\"),
+        \\"/../utils.test.ts\\": () => import(\\"/../utils.test.ts\\")
+        }"
+      `,
       )
 
     try {

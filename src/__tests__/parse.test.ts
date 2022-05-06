@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { parseImportGlob } from '../src/parse'
+import { parseImportGlob } from '../plugin'
 
 async function run(input: string) {
   const items = await parseImportGlob(input, process.cwd(), process.cwd(), id => id)

@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { getCommonBase } from '../src/utils'
+import { getCommonBase } from '../plugin'
 
 describe('getCommonBase()', async () => {
   it('basic', () => {

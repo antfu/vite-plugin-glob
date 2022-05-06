@@ -91,7 +91,7 @@ const importGlobRE = /\bimport\.meta\.(importGlob|glob|globEager|globEagerDefaul
 const knownOptions = {
   as: 'string',
   eager: 'boolean',
-  export: 'string',
+  import: 'string',
   exhaustive: 'boolean',
 } as const
 
@@ -219,9 +219,9 @@ export async function parseImportGlob(
     }
 
     if (options.as && forceDefaultAs.includes(options.as)) {
-      if (options.export && options.export !== 'default')
-        throw err(`Option "export" can only be "default" when "as" is "${options.as}", but got "${options.export}"`)
-      options.export = 'default'
+      if (options.import && options.import !== 'default')
+        throw err(`Option "export" can only be "default" when "as" is "${options.as}", but got "${options.import}"`)
+      options.import = 'default'
     }
 
     if (options.as && options.query)
@@ -274,7 +274,7 @@ export async function transform(
         i.options.eager = true
       if (i.type === 'globEagerDefault') {
         i.options.eager = true
-        i.options.export = 'default'
+        i.options.import = 'default'
       }
     })
   }
@@ -357,16 +357,16 @@ export async function transform(
 
         if (options.eager) {
           const variableName = `${importPrefix}${index}_${i}`
-          const expression = options.export
-            ? `{ ${options.export} as ${variableName} }`
+          const expression = options.import
+            ? `{ ${options.import} as ${variableName} }`
             : `* as ${variableName}`
           staticImports.push(`import ${expression} from ${JSON.stringify(importPath)}`)
           objectProps.push(`${JSON.stringify(filePath)}: ${variableName}`)
         }
         else {
           let importStatement = `import(${JSON.stringify(importPath)})`
-          if (options.export)
-            importStatement += `.then(m => m[${JSON.stringify(options.export)}])`
+          if (options.import)
+            importStatement += `.then(m => m[${JSON.stringify(options.import)}])`
           objectProps.push(`${JSON.stringify(filePath)}: () => ${importStatement}`)
         }
       })

@@ -12,13 +12,13 @@ export interface GlobOptions<Eager extends boolean, AsType extends string> {
   /**
    * Import only the specific named export. Set to `default` to import the default export.
    */
-  export?: string
+  import?: string
   /**
    * Custom queries
    */
   query?: string | Record<string, string | number | boolean>
   /**
-   * Search files also inside `node_modules/` and hidden directories (e.g. `.git/`). BECAREFUL: this is slow.
+   * Search files also inside `node_modules/` and hidden directories (e.g. `.git/`). This might have impact on performance.
    *
    * @default false
    */

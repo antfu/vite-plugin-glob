@@ -12,9 +12,9 @@ export const ignore = import.meta.glob([
   '!**/index.ts',
 ])
 
-export const namedEager = import.meta.glob<string>('./modules/*.ts', { eager: true, export: 'name' })
+export const namedEager = import.meta.glob<string>('./modules/*.ts', { eager: true, import: 'name' })
 
-export const namedDefault = import.meta.glob<string>('./modules/*.ts', { export: 'default' })
+export const namedDefault = import.meta.glob<string>('./modules/*.ts', { import: 'default' })
 
 export const eagerAs = import.meta.glob<ModuleType>([
   './modules/*.ts',

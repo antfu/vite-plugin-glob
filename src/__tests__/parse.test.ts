@@ -54,7 +54,7 @@ describe('parse positives', async () => {
       "!./dir/*.{js,ts}"
     ], {
       eager: true,
-      export: 'named'
+      import: 'named'
     })
     `)).toMatchInlineSnapshot(`
       [
@@ -65,7 +65,7 @@ describe('parse positives', async () => {
           ],
           "options": {
             "eager": true,
-            "export": "named",
+            "import": "named",
           },
         },
       ]
@@ -176,7 +176,7 @@ describe('parse negatives', async () => {
   it('options props', async () => {
     expect(await runError('import.meta.importGlob("hey", { hey: 1 })'))
       .toMatchInlineSnapshot('[Error: Invalid glob import syntax: Unknown options hey]')
-    expect(await runError('import.meta.importGlob("hey", { export: hey })'))
+    expect(await runError('import.meta.importGlob("hey", { import: hey })'))
       .toMatchInlineSnapshot('[Error: Invalid glob import syntax: Could only use literals]')
     expect(await runError('import.meta.importGlob("hey", { eager: 123 })'))
       .toMatchInlineSnapshot('[Error: Invalid glob import syntax: Expected the type of option "eager" to be "boolean", but got "number"]')

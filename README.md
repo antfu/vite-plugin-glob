@@ -132,12 +132,12 @@ const modules = import.meta.importGlob('./dir/*.js', { as: 'raw' })
 } */
 ```
 
-#### Named Exports
+#### Named Imports
 
-It's possible to only import parts of the modules with the `export` options.
+It's possible to only import parts of the modules with the `import` options.
 
 ```ts
-const setups = import.meta.importGlob('./dir/*.js', { export: 'setup' })
+const setups = import.meta.importGlob('./dir/*.js', { import: 'setup' })
 
 /* {
   './dir/foo.js': () => import('./dir/foo.js').then(m => m.setup),
@@ -148,7 +148,7 @@ const setups = import.meta.importGlob('./dir/*.js', { export: 'setup' })
 Combining with `eager`, it's even possible to have tree-shaking enable for those modules.
 
 ```ts
-const setups = import.meta.importGlob('./dir/*.js', { export: 'setup', eager: true })
+const setups = import.meta.importGlob('./dir/*.js', { import: 'setup', eager: true })
 
 /*
 import { setup as __glob__0_0 } from './dir/foo.js'
@@ -163,7 +163,7 @@ const setups = {
 Set `export` to `default` to import the default export.
 
 ```ts
-const modules = import.meta.importGlob('./dir/*.js', { export: 'default', eager: true })
+const modules = import.meta.importGlob('./dir/*.js', { import: 'default', eager: true })
 
 /*
 import __glob__0_0 from './dir/foo.js'

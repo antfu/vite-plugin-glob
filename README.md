@@ -4,6 +4,8 @@
 
 The design experiment for [`import.meta.glob` from Vite](https://vitejs.dev/guide/features.html#glob-import).
 
+> **Update**: This plugin has be [ported to Vite core](https://github.com/vitejs/vite/pull/7537) for the upcoming v3.0. Once stable release of Vite 3 is landed this plugin will be deprecated.
+
 ## Motivations
 
 There are quite some scenarios that `import.meta.glob` wasn't considered when it's been implemented at the beginning. So we received quite a few PRs to improve it.

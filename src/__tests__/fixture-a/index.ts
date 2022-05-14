@@ -55,3 +55,5 @@ export const cleverCwd2 = import.meta.glob([
   '!**/index.ts',
 ],
 )
+
+export const keys = Object.keys({ ...import.meta.glob('./modules/*.ts') })

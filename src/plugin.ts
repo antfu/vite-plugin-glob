@@ -371,7 +371,7 @@ export async function transform(
         }
       })
 
-      const replacement = `{\n${objectProps.join(',\n')}\n}`
+      const replacement = `Object.assign({\n${objectProps.join(',\n')}\n})`
       s.overwrite(start, end, replacement)
 
       return staticImports

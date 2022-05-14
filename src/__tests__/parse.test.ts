@@ -120,6 +120,59 @@ describe('parse positives', async () => {
       ]
     `)
   })
+
+  it('object properties - 1', async () => {
+    expect(await run(`
+    export const pageFiles = {
+      '.page': import.meta.glob('/**/*.page.*([a-zA-Z0-9])')
+};`)).toMatchInlineSnapshot(`
+      [
+        {
+          "globs": [
+            "/**/*.page.*([a-zA-Z0-9])",
+          ],
+          "options": {},
+        },
+      ]
+    `)
+  })
+
+  // The only difference with the above test is the trailing comma, which leads to the Acorn error: `SyntaxError: Unexpected token (4:0)`.
+  // This is unexpected since `acorn` is set to parse `ecmaVersion: 'latest'` so it should support trailing commas.
+  it('object properties - 2', async () => {
+    expect(await run(`
+    export const pageFiles = {
+      '.page': import.meta.glob('/**/*.page.*([a-zA-Z0-9])'),
+};`)).toMatchInlineSnapshot(`
+      [
+        {
+          "globs": [
+            "/**/*.page.*([a-zA-Z0-9])",
+          ],
+          "options": {},
+        },
+      ]
+    `)
+  })
+
+  // Error of #21
+  it('object properties - 3', async () => {
+    expect(await run(`
+    export const pageFiles = {
+      '.page.client': import.meta.glob('/**/*.page.client.*([a-zA-Z0-9])'),
+      '.page.server': import.meta.glob('/**/*.page.server.*([a-zA-Z0-9])'),
+};`)).toMatchInlineSnapshot(`
+      [
+        {
+          "globs": [
+            "/**/*.page.client.*([a-zA-Z0-9])",
+            "/**/*.page.server.*([a-zA-Z0-9])",
+          ],
+          "options": {},
+        },
+      ]
+    `)
+  })
 })
 
 describe('parse negatives', async () => {

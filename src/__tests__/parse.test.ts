@@ -3,7 +3,7 @@ import { parseImportGlob } from '../plugin'
 
 async function run(input: string) {
   const items = await parseImportGlob(input, process.cwd(), process.cwd(), id => id)
-  return items.map(i => ({ globs: i.globs, options: i.options }))
+  return items.map(i => ({ globs: i.globs, options: i.options, start: i.start }))
 }
 
 async function runError(input: string) {
@@ -26,6 +26,7 @@ describe('parse positives', async () => {
             "./modules/*.ts",
           ],
           "options": {},
+          "start": 5,
         },
       ]
     `)
@@ -42,6 +43,7 @@ describe('parse positives', async () => {
             "./dir/*.{js,ts}",
           ],
           "options": {},
+          "start": 5,
         },
       ]
     `)
@@ -67,6 +69,7 @@ describe('parse positives', async () => {
             "eager": true,
             "import": "named",
           },
+          "start": 5,
         },
       ]
     `)
@@ -88,6 +91,7 @@ describe('parse positives', async () => {
             "/dir/**",
           ],
           "options": {},
+          "start": 21,
         },
       ]
     `)
@@ -116,6 +120,92 @@ describe('parse positives', async () => {
               "raw": true,
             },
           },
+          "start": 21,
+        },
+      ]
+    `)
+  })
+
+  it('object properties - 1', async () => {
+    expect(await run(`
+    export const pageFiles = {
+      '.page': import.meta.glob('/**/*.page.*([a-zA-Z0-9])')
+};`)).toMatchInlineSnapshot(`
+  [
+    {
+      "globs": [
+        "/**/*.page.*([a-zA-Z0-9])",
+      ],
+      "options": {},
+      "start": 47,
+    },
+  ]
+`)
+  })
+
+  it('object properties - 2', async () => {
+    expect(await run(`
+    export const pageFiles = {
+      '.page': import.meta.glob('/**/*.page.*([a-zA-Z0-9])'),
+};`)).toMatchInlineSnapshot(`
+  [
+    {
+      "globs": [
+        "/**/*.page.*([a-zA-Z0-9])",
+      ],
+      "options": {},
+      "start": 47,
+    },
+  ]
+`)
+  })
+
+  // Error of #21
+  it('object properties - 3', async () => {
+    expect(await run(`
+    export const pageFiles = {
+      '.page.client': import.meta.glob('/**/*.page.client.*([a-zA-Z0-9])'),
+      '.page.server': import.meta.glob('/**/*.page.server.*([a-zA-Z0-9])'),
+};`)).toMatchInlineSnapshot(`
+  [
+    {
+      "globs": [
+        "/**/*.page.client.*([a-zA-Z0-9])",
+      ],
+      "options": {},
+      "start": 54,
+    },
+    {
+      "globs": [
+        "/**/*.page.server.*([a-zA-Z0-9])",
+      ],
+      "options": {},
+      "start": 130,
+    },
+  ]
+`)
+  })
+
+  it('array item', async () => {
+    expect(await run(`
+    export const pageFiles = [
+      import.meta.glob('/**/*.page.client.*([a-zA-Z0-9])'),
+      import.meta.glob('/**/*.page.server.*([a-zA-Z0-9])'),
+    ]`)).toMatchInlineSnapshot(`
+      [
+        {
+          "globs": [
+            "/**/*.page.client.*([a-zA-Z0-9])",
+          ],
+          "options": {},
+          "start": 38,
+        },
+        {
+          "globs": [
+            "/**/*.page.server.*([a-zA-Z0-9])",
+          ],
+          "options": {},
+          "start": 98,
         },
       ]
     `)

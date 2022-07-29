@@ -1,10 +1,11 @@
+# DEPRECATED: This plugin has be [ported to back to Vite v3.0](https://github.com/vitejs/vite/pull/7537).
+----
+
 # vite-plugin-glob
 
 [![NPM version](https://img.shields.io/npm/v/vite-plugin-glob?color=a1b858&label=)](https://www.npmjs.com/package/vite-plugin-glob)
 
 The design experiment for [`import.meta.glob` from Vite](https://vitejs.dev/guide/features.html#glob-import).
-
-> **Update**: This plugin has be [ported to Vite v3.0 alpha](https://github.com/vitejs/vite/pull/7537).
 
 ## Motivations
 
